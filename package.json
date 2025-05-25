@@ -1,0 +1,25 @@
+{
+  "dependencies": {
+    "webpack": "^5.99.9",
+    "webpack-cli": "^6.0.1"
+  },
+  "name": "medieval_github",
+  "version": "1.0.0",
+  "description": "",
+  "main": "content.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dangthemen10/medieval_github.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dangthemen10/medieval_github/issues"
+  },
+  "homepage": "https://github.com/dangthemen10/medieval_github#readme"
+}

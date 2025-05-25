@@ -1,0 +1,90 @@
+/* Medieval Theme for GitHub */
+
+@import url('https://fonts.googleapis.com/css2?family=Uncial+Antiqua&family=IM+Fell+English&family=Cinzel&display=swap');
+
+:root {
+  --parchment-bg: #f4e6c3;
+  --wood-dark: #6b4226;
+  --golden: #d4a373;
+  --border-golden: #b8860b;
+  --text-dark: #5a3e1b;
+}
+
+body {
+  font-family: 'Uncial Antiqua', 'IM Fell English', serif;
+  background: url('chrome-extension://__MSG_@@extension_id__/icon/background.png')
+    no-repeat center center fixed !important;
+  background-size: cover !important;
+  color: var(--text-dark) !important;
+  transition: background 0.5s ease-in-out;
+}
+
+.medieval-header-container {
+  font-family: 'Uncial Antiqua', 'IM Fell English', serif;
+}
+
+/* Navbar - Thanh điều hướng Gỗ */
+.navbar,
+.header {
+  background-color: var(--wood-dark) !important;
+  color: white !important;
+  border-bottom: 3px solid var(--border-golden);
+}
+
+/* Button - Nút bấm Hoàng Gia */
+button {
+  font-weight: bold;
+  border: 2px solid var(--border-golden);
+  background-color: var(--golden);
+  color: #fff;
+  transition: transform 0.2s ease-in-out;
+}
+button:hover {
+  transform: scale(1.05);
+}
+
+/* Box & Cards - Cuộn Giấy Da */
+.card,
+.box,
+.borderGrid {
+  background-color: var(--parchment-bg) !important;
+  border: 3px solid var(--border-golden) !important;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
+  padding: 15px;
+  border-radius: 5px;
+  transition: transform 0.2s ease-in-out;
+}
+.card:hover,
+.box:hover,
+.borderGrid:hover {
+  transform: rotate(-2deg);
+}
+
+/* Chữ Lửa Cháy */
+@keyframes fireText {
+  0% {
+    text-shadow: 0 0 5px #ff4500;
+  }
+  50% {
+    text-shadow: 0 0 15px #ff6347;
+  }
+  100% {
+    text-shadow: 0 0 5px #ff4500;
+  }
+}
+.animated-text {
+  animation: fireText 1s infinite alternate;
+  color: #8b0000;
+  font-weight: bold;
+}
+
+/* Tương thích Dark Mode */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: var(--parchment-bg) !important;
+  }
+  .navbar,
+  .header {
+    background-color: var(--wood-dark) !important;
+  }
+}

@@ -1,0 +1,44 @@
+{
+    "manifest_version": 3,
+    "name": "Medieval Github",
+    "version": "1.0",
+    "description": "Biến Github thành một vương quốc thời Trung Cổ!",
+    "icons": {
+        "16": "icon/icon16.png",
+        "48": "icon/icon48.png",
+        "128": "icon/icon128.png"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "*://github.com/*"
+            ],
+            "js": [
+                "content.js"
+            ],
+            "css": [
+                "css/style.css"
+            ],
+            "run_at": "document_end",
+            "type": "module"
+        }
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "icon/*.png"
+            ],
+            "matches": [
+                "<all_urls>"
+            ]
+        }
+    ],
+    "permissions": [
+        "storage",
+        "scripting",
+        "activeTab"
+    ],
+    "host_permissions": [
+        "https://github.com/*"
+    ]
+}
