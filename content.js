@@ -340,6 +340,24 @@ function redesignProfileSection() {
     return;
   }
 
+  // const profileEditableAreaElement = document.querySelector(
+  //   '.js-user-profile-bio'
+  // );
+
+  // const profileEditableAreaElementHeaderContainer =
+  //   document.createElement('div');
+  // profileEditableAreaElementHeaderContainer.textContent =
+  //   profileEditableAreaElement.textContent;
+  // profileEditableAreaElementHeaderContainer.style.cssText = `
+  //   width: 100%;
+  //   margin: 0;
+  // text-align: center;
+  // font-size: 24px;
+  // font-weight: bold;
+  // color:rgb(245, 247, 249);
+  // `;
+  // profileContainer.appendChild(profileEditableAreaElementHeaderContainer);
+
   // Lấy thông tin từ vcard-names-container
   const vcardContainer = document.querySelector('.vcard-names-container');
   let nameInfo = null;
@@ -471,6 +489,243 @@ function redesignProfileSection() {
     }
   }
 
+  // Lấy element đầu tiên (index 6 - nodeChild cuối cùng)
+  const checkLengthProfileContainer = profileContainer.children.length;
+  console.log('checkLengthProfileContainer', checkLengthProfileContainer);
+  const targetElement6 =
+    checkLengthProfileContainer === 7
+      ? profileContainer.childNodes.item(7).nextSibling
+      : checkLengthProfileContainer === 9
+      ? profileContainer.childNodes.item(11).nextSibling
+      : profileContainer.lastElementChild;
+
+  console.log('targetElement6', targetElement6);
+  if (!targetElement6) {
+    console.warn('Target element not found');
+    return;
+  }
+
+  targetElement6.classList.remove('border-top', 'color-border-muted', 'mt-3');
+
+  const frameOrgBackground = chrome.runtime.getURL('icon/frame_org.png');
+
+  // Lấy thẻ h2 và các thẻ a
+  const h2Element = targetElement6.querySelector('h2');
+  const aElements = targetElement6.querySelectorAll('a[aria-label]');
+  if (aElements.length <= 0) {
+    console.warn('Target element not found');
+    return;
+  }
+
+  // Thiết lập style cho container chính
+  targetElement6.style.cssText = `
+background-image: url('${frameOrgBackground}');
+background-size: 100% 95%;
+background-position: center;
+background-repeat: no-repeat;
+position: relative;
+height: 355px;
+display: flex;
+flex-direction: column;
+align-items: center;
+`;
+
+  // Tạo container cho h2 ở phía trên
+  const headerContainer = document.createElement('div');
+  headerContainer.style.cssText = `
+width: 100%;
+display: flex;
+justify-content: center;
+align-items: center;
+padding-top: 105px;
+`;
+
+  // Style cho h2
+  if (h2Element) {
+    h2Element.style.cssText = `
+  margin: 0;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: #24292f;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  font-family: 'Cinzel', 'Times New Roman', serif;
+`;
+    headerContainer.appendChild(h2Element);
+  }
+
+  // Tạo container cho các thẻ a
+  const avatarOrgContainer = document.createElement('div');
+  avatarOrgContainer.style.cssText = `
+display: grid;
+grid-template-columns: repeat(3, 0fr);
+gap: 5px;
+max-width: 350px;
+justify-items: center;
+align-items: center;
+padding: 0 20px;
+`;
+
+  // URL của hình shield (bạn cần upload hình này vào extension)
+  const shieldImageUrl = chrome.runtime.getURL('icon/listOrg.png'); // Thay đổi path cho phù hợp
+
+  // Tạo CSS cho medieval shield với background image
+  let shieldStyles = `
+.medieval-shield {
+  position: relative;
+  width: 70px;
+  height: 60px;
+  background-image: url('${shieldImageUrl}');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.medieval-shield:hover {
+  transform: scale(1.1);
+  filter: brightness(1.2) drop-shadow(0 0 15px rgba(255,215,0,0.8));
+}
+`;
+
+  // Thêm CSS vào head
+  const styleSheet = document.createElement('style');
+  styleSheet.textContent = shieldStyles;
+  document.head.appendChild(styleSheet);
+
+  // Style cho từng thẻ a và di chuyển vào container mới
+  aElements.forEach((aElement, index) => {
+    if (index < 6) {
+      // Giới hạn tối đa 6 thẻ a
+
+      // Tạo wrapper shield cho mỗi aElement
+      const shieldWrapper = document.createElement('div');
+      shieldWrapper.className = 'medieval-shield';
+
+      // Tạo inner container
+      const shieldInner = document.createElement('div');
+      shieldInner.className = 'medieval-shield-inner';
+
+      // Tạo emblem
+      const emblem = document.createElement('div');
+      emblem.className = 'medieval-emblem';
+
+      // Style cho aElement
+      aElement.style.cssText = `
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    overflow: hidden;
+    position: relative;
+    margin: 6px 0px 5px -5px;
+    `;
+
+      // Style cho img bên trong thẻ a
+      const imgElement = aElement.querySelector('img');
+      if (imgElement) {
+        imgElement.style.cssText = `
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 2px solid #ffffff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      `;
+      }
+
+      // Lắp ráp structure: wrapper > inner > aElement + emblem
+      shieldInner.appendChild(aElement);
+      shieldWrapper.appendChild(shieldInner);
+      shieldWrapper.appendChild(emblem);
+
+      avatarOrgContainer.appendChild(shieldWrapper);
+    }
+  });
+
+  // Xóa nội dung cũ và thêm các container mới
+  targetElement6.innerHTML = '';
+  targetElement6.appendChild(headerContainer);
+  targetElement6.appendChild(avatarOrgContainer);
+
+  // Nếu có ít hơn 6 thẻ a, điều chỉnh grid layout
+  if (aElements.length <= 3) {
+    avatarOrgContainer.style.gridTemplateColumns = `repeat(${aElements.length}, 1fr)`;
+    targetElement6.style.cssText = `
+      background-image: url('${frameOrgBackground}');
+      background-size: 100% 90%;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: relative;
+      height: 300px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    `;
+    headerContainer.style.cssText = `
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding-top: 90px;
+    `;
+    shieldStyles = `
+      .medieval-shield {
+      position: relative;
+      width: 80px;
+      height: 70px;
+      background-image: url('${shieldImageUrl}');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+      .medieval-shield:hover {
+        transform: scale(1.1);
+        filter: brightness(1.2) drop-shadow(0 0 15px rgba(255,215,0,0.8));
+      }
+    `;
+    const styleSheet = document.createElement('style');
+    styleSheet.textContent = shieldStyles;
+    document.head.appendChild(styleSheet);
+
+    aElements.forEach((aElement, index) => {
+      if (index < 6) {
+        // Style cho aElement
+        aElement.style.cssText = `
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      overflow: hidden;
+      position: relative;
+      margin: 6px 0px 5px -5px;
+      `;
+
+        // Style cho img bên trong thẻ a
+        const imgElement = aElement.querySelector('img');
+        if (imgElement) {
+          imgElement.style.cssText = `
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        border: 2px solid #ffffff;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        `;
+        }
+      }
+    });
+  } else if (aElements.length <= 4) {
+    avatarOrgContainer.style.gridTemplateColumns = 'repeat(3, 0fr)';
+    avatarOrgContainer.style.gridTemplateRows = 'repeat(3, 0fr)';
+  }
+
   console.log('GitHub profile section redesigned successfully');
 }
 
@@ -480,8 +735,10 @@ function redesignPinnedRepos() {
     '.js-pinned-items-reorder-container'
   );
 
-  const hasElementArtical =
-    pinnedContainer.parentNode.parentNode.childElementCount > 3;
+  const hasPinnedContent = pinnedContainer
+    .querySelector('h2')
+    ?.textContent.trim()
+    ?.includes('Pinned');
 
   if (pinnedContainer) {
     console.log('Found pinned container:', pinnedContainer);
@@ -504,8 +761,8 @@ function redesignPinnedRepos() {
         background-size: 90% 98%;
         background-repeat: no-repeat;
         background-position: center;
-        padding: ${hasElementArtical ? 0 : '120px 98px 137px 123px'};
-        left: ${hasElementArtical ? '-100px' : 0};
+        padding: ${hasPinnedContent ? 0 : '120px 98px 137px 123px'};
+        left: ${hasPinnedContent ? '-100px' : 0};
         box-sizing: border-box;
       `;
 

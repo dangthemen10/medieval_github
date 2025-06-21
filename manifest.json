@@ -14,7 +14,7 @@
                 "*://github.com/*"
             ],
             "js": [
-                "content.js"
+                "dist/bundle.js"
             ],
             "css": [
                 "css/style.css"

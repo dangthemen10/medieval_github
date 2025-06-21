@@ -304,14 +304,186 @@ function createFlag(
   return flagContainer;
 }
 
+/**
+ * START redesignProfileSection
+ */
+function redesignProfileSection() {
+  const layoutSideBarContainer = document.querySelector('.Layout-sidebar');
+  if (!layoutSideBarContainer) {
+    console.warn('Profile container not found');
+    return;
+  }
+  layoutSideBarContainer.style.cssText = `
+    margin: -10px;
+    width: 350px;
+  `;
+  layoutSideBarContainer.childNodes[1].style.cssText = `
+    margin-top: 0px !important;
+  `;
+
+  const profileContainer = document.querySelector(
+    '.js-profile-editable-replace'
+  );
+
+  if (!profileContainer) {
+    console.warn('Profile container not found');
+    return;
+  }
+
+  const frameAvatarBackground = chrome.runtime.getURL('icon/frame_avt.png');
+
+  // Lấy element đầu tiên (index 1 - nodeChild thứ hai)
+  const targetElement = profileContainer.childNodes[1];
+
+  if (!targetElement) {
+    console.warn('Target element not found');
+    return;
+  }
+
+  // Lấy thông tin từ vcard-names-container
+  const vcardContainer = document.querySelector('.vcard-names-container');
+  let nameInfo = null;
+
+  if (vcardContainer) {
+    const fullName = vcardContainer
+      .querySelector('.vcard-fullname')
+      ?.textContent?.trim();
+    const username = vcardContainer
+      .querySelector('.vcard-username')
+      ?.textContent?.trim();
+
+    nameInfo = {
+      fullName: fullName || '',
+      username: username || '',
+    };
+
+    // Ẩn container gốc để tránh hiển thị trùng lặp
+    vcardContainer.style.display = 'none';
+  }
+
+  // Apply styles cho targetElement
+  targetElement.style.cssText = `
+    background-image: url('${frameAvatarBackground}');
+    background-size: 150% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    width: 360px;
+    height: 498px;
+    padding: 32px 113px 60px 78px;
+    align-items: center;
+  `;
+
+  // Tạo container cho thông tin tên
+  if (nameInfo && (nameInfo.fullName || nameInfo.username)) {
+    const nameContainer = document.createElement('div');
+    nameContainer.className = 'redesigned-name-container';
+    nameContainer.style.cssText = `
+      margin-bottom: ${nameInfo.fullName ? '10px' : '40px'};
+      text-align: center;
+      width: 100%;
+      max-width: 280px;
+    `;
+
+    // Tạo phần tử cho tên đầy đủ
+    if (nameInfo.fullName) {
+      const fullNameElement = document.createElement('h1');
+      fullNameElement.textContent = nameInfo.fullName;
+      fullNameElement.style.cssText = `
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #24292f;
+        margin: 0 0 8px 0;
+        line-height: 1.3;
+      `;
+      nameContainer.appendChild(fullNameElement);
+    }
+
+    // Tạo dấu gạch ngang ngăn cách
+    if (nameInfo.fullName && nameInfo.username) {
+      const separator = document.createElement('hr');
+      separator.style.cssText = `
+        border: none;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #d0d7de, transparent);
+        margin: 10px 0;
+      `;
+      nameContainer.appendChild(separator);
+    }
+
+    // Tạo phần tử cho username
+    if (nameInfo.username) {
+      const usernameElement = document.createElement('p');
+      usernameElement.textContent = nameInfo.username;
+      usernameElement.style.cssText = `
+        font-size: 1.1rem;
+        font-weight: 400;
+        color: #656d76;
+        margin: 0;
+        font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+      `;
+      nameContainer.appendChild(usernameElement);
+    }
+
+    if (!nameInfo.fullName) {
+      const separator = document.createElement('hr');
+      separator.style.cssText = `
+        border: none;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #d0d7de, transparent);
+        margin: 10px 0;
+      `;
+      nameContainer.appendChild(separator);
+    }
+
+    // Thêm name container vào đầu targetElement
+    targetElement.insertBefore(nameContainer, targetElement.firstChild);
+  }
+
+  // Tìm và style lại avatar container nếu có
+  const avatarContainer = targetElement.querySelector('.position-relative');
+  if (avatarContainer) {
+    avatarContainer.style.cssText = `
+      z-index: 4;
+      transition: transform 0.3s ease;
+    `;
+
+    // Thêm hiệu ứng hover cho avatar
+    const avatarImg = avatarContainer.querySelector('.avatar');
+    if (avatarImg) {
+      avatarImg.style.cssText = `
+        height: auto;
+        border: 4px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease;
+      `;
+
+      // Hover effects
+      avatarImg.addEventListener('mouseenter', function () {
+        this.style.transform = 'scale(1.05)';
+        this.style.boxShadow = '0 12px 35px rgba(0, 0, 0, 0.2)';
+      });
+
+      avatarImg.addEventListener('mouseleave', function () {
+        this.style.transform = 'scale(1)';
+        this.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.15)';
+      });
+    }
+  }
+
+  console.log('GitHub profile section redesigned successfully');
+}
+
 // Hàm redesign pinned repositories section
 function redesignPinnedRepos() {
   const pinnedContainer = document.querySelector(
     '.js-pinned-items-reorder-container'
   );
 
-  const hasElementArtical =
-    pinnedContainer.parentNode.parentNode.childElementCount > 3;
+  const hasPinnedContent = pinnedContainer
+    .querySelector('h2')
+    ?.textContent.trim()
+    ?.includes('Pinned');
 
   if (pinnedContainer) {
     console.log('Found pinned container:', pinnedContainer);
@@ -334,8 +506,8 @@ function redesignPinnedRepos() {
         background-size: 90% 98%;
         background-repeat: no-repeat;
         background-position: center;
-        padding: ${hasElementArtical ? 0 : '120px 98px 137px 123px'};
-        left: ${hasElementArtical ? '-100px' : 0};
+        padding: ${hasPinnedContent ? 0 : '120px 98px 137px 123px'};
+        left: ${hasPinnedContent ? '-100px' : 0};
         box-sizing: border-box;
       `;
 
@@ -711,6 +883,7 @@ function initializeMedievalTheme() {
   console.log('Initializing Medieval GitHub Theme with Animated Flags...');
 
   applyMedievalTheme();
+  redesignProfileSection();
 
   waitForElement('.js-pinned-items-reorder-container', () => {
     console.log('Pinned container found, applying animated flags redesign...');
