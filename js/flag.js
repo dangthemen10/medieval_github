@@ -12,6 +12,7 @@ export function createFlag(
   const colors = FLAG_COLORS[index % FLAG_COLORS.length];
 
   const flagContainer = document.createElement('div');
+  flagContainer.dataset.medievalCreated = 'true'; // Track
   flagContainer.className = 'flag-container';
   flagContainer.style.cssText = `
           position: absolute;
@@ -24,6 +25,7 @@ export function createFlag(
 
   // Cọc cờ
   const flagPole = document.createElement('div');
+  flagPole.dataset.medievalCreated = 'true'; // Track
   flagPole.className = 'flag-pole';
   flagPole.style.cssText = `
           width: 3px;
@@ -37,6 +39,7 @@ export function createFlag(
 
   // Lá cờ chính
   const flag = document.createElement('div');
+  flag.dataset.medievalCreated = 'true'; // Track
   flag.className = 'medieval-flag';
   flag.style.cssText = `
           position: absolute;
@@ -54,6 +57,7 @@ export function createFlag(
 
   // Nội dung thông tin trên cờ
   const flagContent = document.createElement('div');
+  flagContent.dataset.medievalCreated = 'true'; // Track
   flagContent.className = 'flag-content';
   flagContent.innerHTML = `
           <div class="flag-title">${repoName}</div>
@@ -78,6 +82,7 @@ export function createFlag(
 
   // Thêm kiểu cho các phần tử trong flag
   const flagStyle = document.createElement('style');
+  flagStyle.dataset.medievalCreated = 'true'; // Track
   flagStyle.textContent = `
           @keyframes flagWave {
             0%, 100% { 
@@ -149,6 +154,7 @@ export function createFlag(
   // Tạo hiệu ứng gió nhẹ cho cọc cờ
   flagPole.style.animation = 'poleWave 4s ease-in-out infinite';
   const poleStyle = document.createElement('style');
+  poleStyle.dataset.medievalCreated = 'true'; // Track
   poleStyle.textContent = `
           @keyframes poleWave {
             0%, 100% { transform: rotate(0deg); }
@@ -164,6 +170,7 @@ export function createFlag(
 
   // Thêm trang trí cho đỉnh cọc cờ
   const flagTop = document.createElement('div');
+  flagTop.dataset.medievalCreated = 'true'; // Track
   flagTop.style.cssText = `
           position: absolute;
           top: -5px;
@@ -189,6 +196,7 @@ export function createFlag(
 // Hàm tạo castle image element
 export function createCastleImage() {
   const castleImg = document.createElement('img');
+  castleImg.dataset.medievalCreated = 'true'; // Track
   castleImg.src = chrome.runtime.getURL('icon/castle.png');
   castleImg.alt = 'Castle';
   castleImg.style.cssText = `

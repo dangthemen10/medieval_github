@@ -8,6 +8,13 @@
         "48": "icon/icon48.png",
         "128": "icon/icon128.png"
     },
+    "action": {
+        "default_popup": "popup.html",
+        "default_title": "Medieval Github"
+    },
+    "background": {
+        "service_worker": "background.js"
+    },
     "content_scripts": [
         {
             "matches": [
@@ -16,9 +23,6 @@
             "js": [
                 "dist/bundle.js"
             ],
-            "css": [
-                "css/style.css"
-            ],
             "run_at": "document_end",
             "type": "module"
         }
@@ -26,10 +30,11 @@
     "web_accessible_resources": [
         {
             "resources": [
-                "icon/*.png"
+                "icon/*.png",
+                "css/style.css"
             ],
             "matches": [
-                "<all_urls>"
+                "https://github.com/*"
             ]
         }
     ],

@@ -1,6 +1,8 @@
+// pinnedRepos.js - Enhanced với proper DOM restoration
 import { setupDragScroll } from './dragScroll.js';
 import { createFlag, createCastleImage } from './flag.js';
 import { CASTLE_POSITIONS } from './constants.js';
+import { trackCreated, trackModified } from './tracking.js';
 
 // Hàm redesign pinned repositories section
 export function redesignPinnedRepos() {
@@ -9,22 +11,45 @@ export function redesignPinnedRepos() {
   );
 
   const hasPinnedContent = pinnedContainer
-    .querySelector('h2')
+    ?.querySelector('h2')
     ?.textContent.trim()
     ?.includes('Pinned');
 
   if (pinnedContainer) {
     console.log('Found pinned container:', pinnedContainer);
 
+    // ✅ FIX 1: Lưu reference đến parent container để đảm bảo không bị mất
+    const originalParent = pinnedContainer.parentNode;
+    const originalNextSibling = pinnedContainer.nextSibling;
+
+    // Tạo một placeholder để đánh dấu vị trí ban đầu
+    const placeholder = document.createElement('div');
+    placeholder.style.display = 'none';
+    placeholder.dataset.medievalPlaceholder = 'true';
+    placeholder.dataset.placeholderFor = 'pinned-container';
+
+    // Insert placeholder vào vị trí ban đầu
+    originalParent.insertBefore(placeholder, pinnedContainer);
+
+    // ✅ FIX 2: Enhanced tracking với placeholder reference
+    trackModified(pinnedContainer, {
+      originalParent: originalParent,
+      originalNextSibling: originalNextSibling,
+      placeholder: placeholder, // Thêm placeholder reference
+      className: pinnedContainer.className,
+      style: pinnedContainer.style.cssText,
+      innerHTML: pinnedContainer.innerHTML,
+    });
+
     const medievalMapBackground = chrome.runtime.getURL(
       'icon/background_map.png'
     );
-
-    // URL cho hình khung custom
     const customFrameUrl = chrome.runtime.getURL('icon/frame_map.png');
 
     // Tạo container wrapper cho toàn bộ phần tử
     const frameWrapper = document.createElement('div');
+    trackCreated(frameWrapper, 'pinnedRepos_frameWrapper');
+
     frameWrapper.className = 'medieval-frame-wrapper';
     frameWrapper.style.cssText = `
         position: relative;
@@ -39,13 +64,44 @@ export function redesignPinnedRepos() {
         box-sizing: border-box;
       `;
 
+    // ✅ FIX 3: Insert frameWrapper vào vị trí của placeholder
+    originalParent.insertBefore(frameWrapper, placeholder);
+
+    // Di chuyển pinnedContainer vào frameWrapper
+    frameWrapper.appendChild(pinnedContainer);
+
     // Tách header ra khỏi pinned container
     const header = pinnedContainer.querySelector('h2');
     let headerContainer = null;
 
     if (header) {
-      // Tạo container riêng cho header - đặt trong phần khung xanh
+      // ✅ FIX 1: Lưu reference đến parent container để đảm bảo không bị mất
+      const originalParentH2 = header.parentNode;
+      const originalNextSiblingH2 = header.nextSibling;
+
+      // Tạo một placeholder để đánh dấu vị trí ban đầu
+      const placeholderH2 = document.createElement('div');
+      placeholderH2.style.display = 'none';
+      placeholderH2.dataset.medievalH2Placeholder = 'true';
+      placeholderH2.dataset.placeholderFor = 'h2';
+
+      // Insert placeholder vào vị trí ban đầu
+      originalParentH2.insertBefore(placeholderH2, header);
+      // Track modification của header
+      // ✅ FIX 2: Enhanced tracking với placeholder reference
+      trackModified(header, {
+        originalParent: originalParentH2,
+        originalNextSibling: originalNextSiblingH2,
+        placeholder: placeholderH2, // Thêm placeholder reference
+        className: header.className,
+        style: header.style.cssText,
+        innerHTML: header.innerHTML,
+      });
+
+      // Tạo container riêng cho header
       headerContainer = document.createElement('div');
+      trackCreated(headerContainer, 'pinnedRepos_headerContainer');
+
       headerContainer.className = 'medieval-header-container';
       headerContainer.style.cssText = `
           position: absolute;
@@ -57,7 +113,7 @@ export function redesignPinnedRepos() {
           text-align: center;
         `;
 
-      // Style cho header để nằm trong khung xanh
+      // Style cho header
       header.style.cssText = `
           color: #ffffff;
         `;
@@ -69,14 +125,6 @@ export function redesignPinnedRepos() {
       }
 
       headerContainer.appendChild(header);
-    }
-
-    // Wrap pinned container với frame
-    pinnedContainer.parentNode.insertBefore(frameWrapper, pinnedContainer);
-    frameWrapper.appendChild(pinnedContainer);
-
-    // Thêm header vào frame wrapper
-    if (headerContainer) {
       frameWrapper.appendChild(headerContainer);
     }
 
@@ -98,6 +146,8 @@ export function redesignPinnedRepos() {
 
     // Tạo scrollable content area
     const scrollableArea = document.createElement('div');
+    trackCreated(scrollableArea, 'pinnedRepos_scrollableArea');
+
     scrollableArea.className = 'scrollable-map';
     scrollableArea.style.cssText = `
         position: absolute;
@@ -113,6 +163,8 @@ export function redesignPinnedRepos() {
 
     // Thêm overlay
     const overlay = document.createElement('div');
+    trackCreated(overlay, 'pinnedRepos_overlay');
+
     overlay.style.cssText = `
         position: absolute;
         top: 0;
@@ -129,6 +181,8 @@ export function redesignPinnedRepos() {
 
     // Tạo container cho các castle
     const castleContainer = document.createElement('div');
+    trackCreated(castleContainer, 'pinnedRepos_castleContainer');
+
     castleContainer.className = 'castle-world';
     castleContainer.style.cssText = `
         position: absolute;
@@ -142,12 +196,29 @@ export function redesignPinnedRepos() {
     // Style và biến đổi repository list
     const repoList = pinnedContainer.querySelector('.d-flex.flex-wrap');
     if (repoList) {
+      // Track modification của repo list
+      trackModified(repoList, {
+        originalParent: repoList.parentNode,
+        originalNextSibling: repoList.nextSibling,
+        className: repoList.className,
+        style: repoList.style.cssText,
+        innerHTML: repoList.innerHTML,
+      });
+
       // Biến đổi các repository items thành castle
       const repoItems = repoList.querySelectorAll('.pinned-item-list-item');
       repoItems.forEach((item, index) => {
+        // Track modification của từng repo item
+        trackModified(item, {
+          className: item.className,
+          style: item.style.cssText,
+        });
+
         if (index >= CASTLE_POSITIONS.length) return;
 
         const castleElement = document.createElement('div');
+        trackCreated(castleElement, `pinnedRepos_castle_${index}`);
+
         castleElement.className = 'castle-container';
         castleElement.style.cssText = `
             position: absolute;
@@ -182,7 +253,7 @@ export function redesignPinnedRepos() {
         const forksCount = forks ? forks.textContent.trim() : '0';
         const repoUrl = repoLink ? repoLink.href : '#';
 
-        // Tạo lá cờ thay cho info panel
+        // Tạo lá cờ
         const flag = createFlag(
           index,
           repoName,
@@ -194,7 +265,7 @@ export function redesignPinnedRepos() {
 
         flag.style.cssText = `
             position: absolute;
-            top: ${index === 2 ? '-50px' : '-60px;'};
+            top: ${index === 2 ? '-50px' : '-60px'};
             left: ${index === 2 ? '75%' : '50%'};
             transform: translateX(-50%) scale(1);
             z-index: 15;
@@ -247,11 +318,11 @@ export function redesignPinnedRepos() {
     scrollableArea.appendChild(castleContainer);
     pinnedContainer.appendChild(scrollableArea);
 
-    // Setup drag scroll với kích thước mới
+    // Setup drag scroll
     setupDragScroll(pinnedContainer, scrollableArea);
 
     console.log(
-      'Pinned repositories redesigned successfully with animated flags!'
+      'Pinned repositories redesigned successfully with enhanced tracking!'
     );
   } else {
     console.log('Pinned container not found yet, retrying...');
