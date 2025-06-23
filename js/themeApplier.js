@@ -2,32 +2,24 @@ import { MEDIEVAL_TERMS } from './constants.js';
 import { trackModified } from './tracking.js';
 
 /**
- * Main function to apply medieval theme to text and icons on the page
- * @param {Node} node - The root node to start processing from (default: document.body)
+ * Áp dụng theme medieval cho text và icons trên trang
+ * @param {Node} node - Node gốc để bắt đầu xử lý (mặc định: document.body)
  */
 export function applyMedievalTheme(node = document.body) {
   console.log('[MedievalTheme] Applying theme with tracking support...');
 
-  const textNodes = getTextNodes(node);
-
-  textNodes.forEach((textNode) => {
-    processTextNode(textNode);
-  });
+  // Lấy tất cả text nodes và xử lý chúng
+  getTextNodes(node).forEach(processTextNode);
 }
 
 /**
- * Get all text nodes from a given root node
- * @param {Node} node - Root node to search
- * @returns {Node[]} Array of text nodes
+ * Lấy tất cả text nodes từ node gốc
+ * @param {Node} node - Node gốc để tìm kiếm
+ * @returns {Node[]} Mảng các text nodes
  */
 function getTextNodes(node) {
   const textNodes = [];
-  const walker = document.createTreeWalker(
-    node,
-    NodeFilter.SHOW_TEXT,
-    null,
-    false
-  );
+  const walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT);
 
   let textNode;
   while ((textNode = walker.nextNode())) {
@@ -38,132 +30,99 @@ function getTextNodes(node) {
 }
 
 /**
- * Process a single text node for medieval text replacements
- * @param {Node} textNode - Text node to process
+ * Xử lý một text node để thay thế text medieval
+ * @param {Node} textNode - Text node cần xử lý
  */
 function processTextNode(textNode) {
   const parent = textNode.parentElement;
 
-  // Skip if already processed or parent is null
-  if (!parent || parent.dataset.medievalTextProcessed === 'true') {
-    return;
-  }
+  // Bỏ qua nếu đã được xử lý hoặc parent null
+  if (!parent || parent.dataset.medievalTextProcessed === 'true') return;
 
   const originalText = textNode.nodeValue;
   const medievalText = applyTextReplacements(originalText);
 
-  // Only proceed if text actually changed
-  if (originalText === medievalText) {
-    return;
-  }
+  // Chỉ xử lý nếu text thực sự thay đổi
+  if (originalText === medievalText) return;
 
-  // Track parent element before making changes
-  trackParentElement(parent, originalText);
-
-  // Update text content
+  // Track và cập nhật
+  trackModified(parent, { innerHTML: parent.innerHTML, originalText });
   textNode.nodeValue = medievalText;
 
-  // Handle SVG icon replacements for changed terms
+  // Thay thế SVG icons liên quan
   replaceRelatedSvgIcons(parent.parentNode, originalText);
 
-  // Mark as processed
+  // Đánh dấu đã xử lý
   parent.dataset.medievalTextProcessed = 'true';
-
-  console.log(`[MedievalTheme] Text replaced in element: ${parent.tagName}`);
+  console.log(`[MedievalTheme] Text replaced in: ${parent.tagName}`);
 }
 
 /**
- * Apply medieval text replacements to a string
- * @param {string} text - Original text
- * @returns {string} Text with medieval replacements
+ * Áp dụng các thay thế text medieval cho string
+ * @param {string} text - Text gốc
+ * @returns {string} Text đã được thay thế
  */
 function applyTextReplacements(text) {
-  let modifiedText = text;
+  let result = text;
 
+  // Thay thế tất cả terms trong MEDIEVAL_TERMS
   Object.entries(MEDIEVAL_TERMS).forEach(([original, medieval]) => {
-    if (modifiedText.includes(original)) {
-      modifiedText = modifiedText.replace(new RegExp(original, 'g'), medieval);
+    if (result.includes(original)) {
+      result = result.replace(new RegExp(original, 'g'), medieval);
     }
   });
 
-  return modifiedText;
+  return result;
 }
 
 /**
- * Track parent element state before modification
- * @param {Element} parent - Parent element to track
- * @param {string} originalText - Original text content
- */
-function trackParentElement(parent, originalText) {
-  trackModified(parent, {
-    innerHTML: parent.innerHTML, // Save original HTML content
-    originalText: originalText, // Save original text for this specific node
-  });
-}
-
-/**
- * Replace SVG icons related to changed terms
- * @param {Element} parent - Parent element to search for SVGs
- * @param {string} originalText - Original text to check for terms
+ * Thay thế SVG icons liên quan đến các terms đã thay đổi
+ * @param {Element} parent - Element cha để tìm SVGs
+ * @param {string} originalText - Text gốc để kiểm tra terms
  */
 function replaceRelatedSvgIcons(parent, originalText) {
   if (!parent) return;
 
-  // Check which terms were present in original text
-  const presentTerms = Object.keys(MEDIEVAL_TERMS).filter((term) =>
-    originalText.includes(term)
-  );
-
-  presentTerms.forEach((term) => {
-    replaceSvgIcon(parent, term);
-  });
+  // Tìm các terms có trong text gốc và thay thế SVG tương ứng
+  Object.keys(MEDIEVAL_TERMS)
+    .filter((term) => originalText.includes(term))
+    .forEach((term) => replaceSvgIcon(parent, term));
 }
 
 /**
- * Replace SVG icon with medieval-themed image
- * @param {Element} parent - Parent element containing SVG
- * @param {string} term - Term that triggered the replacement
+ * Thay thế SVG icon bằng image medieval
+ * @param {Element} parent - Element cha chứa SVG
+ * @param {string} term - Term kích hoạt việc thay thế
  */
 function replaceSvgIcon(parent, term) {
   const svgElement = parent.querySelector('svg');
+  if (!svgElement || svgElement.parentNode !== parent) return;
 
-  if (!svgElement || svgElement.parentNode !== parent) {
-    return;
-  }
-
-  // Track parent before making changes
+  // Track trước khi thay đổi
   trackModified(parent, {
     innerHTML: parent.innerHTML,
-    iconReplacement: {
-      term: term,
-      originalSvg: svgElement.outerHTML,
-    },
+    iconReplacement: { term, originalSvg: svgElement.outerHTML },
   });
 
-  // Create and configure new medieval icon
+  // Tạo và thay thế icon medieval
   const medievalIcon = createMedievalIcon(term);
-
-  // Replace SVG with new icon
   parent.replaceChild(medievalIcon, svgElement);
 
-  console.log(`[MedievalTheme] SVG icon replaced for term: ${term}`);
+  console.log(`[MedievalTheme] SVG icon replaced for: ${term}`);
 }
 
 /**
- * Create a medieval-themed icon element
- * @param {string} term - Term to create icon for
- * @returns {HTMLImageElement} Medieval icon element
+ * Tạo element icon medieval
+ * @param {string} term - Term để tạo icon
+ * @returns {HTMLImageElement} Element icon medieval
  */
 function createMedievalIcon(term) {
   const icon = document.createElement('img');
   const iconPath = term.toLowerCase().replace(/\s+/g, '-');
 
+  // Cấu hình icon
   icon.src = chrome.runtime.getURL(`icon/${iconPath}.png`);
-  icon.style.cssText = `
-    width: 16px;
-    height: 16px;
-    margin-right: 5px;
-  `;
+  icon.style.cssText = 'width: 16px; height: 16px; margin-right: 5px;';
   icon.dataset.medievalIcon = 'true';
   icon.dataset.originalTerm = term;
 
@@ -171,28 +130,19 @@ function createMedievalIcon(term) {
 }
 
 /**
- * Restore original content for a specific element
- * @param {Element} element - Element to restore
- * @returns {boolean} Success status
+ * Khôi phục nội dung gốc cho element cụ thể
+ * @param {Element} element - Element cần khôi phục
+ * @returns {boolean} Trạng thái thành công
  */
 export function restoreOriginalContent(element) {
   try {
-    // Remove text processing marker
-    if (element.dataset.medievalTextProcessed) {
-      delete element.dataset.medievalTextProcessed;
-    }
+    // Xóa marker đã xử lý
+    delete element.dataset.medievalTextProcessed;
 
-    // Clean up medieval icons (actual restoration handled by tracking system)
-    const medievalIcons = element.querySelectorAll(
-      '[data-medieval-icon="true"]'
-    );
-    medievalIcons.forEach((icon) => {
-      const originalTerm = icon.dataset.originalTerm;
-      if (originalTerm) {
-        console.log(
-          `[MedievalTheme] Cleaning up medieval icon for: ${originalTerm}`
-        );
-      }
+    // Log cleanup cho medieval icons (tracking system sẽ xử lý restore)
+    element.querySelectorAll('[data-medieval-icon="true"]').forEach((icon) => {
+      const term = icon.dataset.originalTerm;
+      if (term) console.log(`[MedievalTheme] Cleaning up icon for: ${term}`);
     });
 
     return true;
@@ -203,104 +153,65 @@ export function restoreOriginalContent(element) {
 }
 
 /**
- * Comprehensive cleanup function for all text and icon changes
- * This serves as a fallback in case the tracking system misses anything
+ * Cleanup toàn diện cho tất cả thay đổi text và icon
+ * Đây là fallback phòng trường hợp tracking system bỏ sót
  */
 export function cleanupTextAndIconChanges() {
   console.log('[MedievalTheme] Cleaning up text and icon changes...');
 
   try {
-    // Clean up processed elements
-    cleanupProcessedElements();
+    // Cleanup các elements đã được xử lý
+    document
+      .querySelectorAll('[data-medieval-text-processed="true"]')
+      .forEach(restoreOriginalContent);
 
-    // Clean up medieval icons
-    cleanupMedievalIcons();
+    // Log số lượng medieval icons (tracking system sẽ restore)
+    const iconCount = document.querySelectorAll(
+      '[data-medieval-icon="true"]'
+    ).length;
+    console.log(
+      `[MedievalTheme] Found ${iconCount} medieval icons to clean up`
+    );
 
-    // Fallback: reverse any remaining text replacements
+    // Fallback: reverse text replacements thủ công
     performFallbackTextCleanup();
   } catch (error) {
-    console.error('[MedievalTheme] Error in text/icon cleanup:', error);
+    console.error('[MedievalTheme] Error in cleanup:', error);
   }
 }
 
 /**
- * Clean up elements marked as processed
- */
-function cleanupProcessedElements() {
-  const processedElements = document.querySelectorAll(
-    '[data-medieval-text-processed="true"]'
-  );
-  processedElements.forEach((element) => {
-    restoreOriginalContent(element);
-  });
-}
-
-/**
- * Clean up medieval icons from the page
- */
-function cleanupMedievalIcons() {
-  const medievalIcons = document.querySelectorAll(
-    '[data-medieval-icon="true"]'
-  );
-  console.log(
-    `[MedievalTheme] Found ${medievalIcons.length} medieval icons to clean up`
-  );
-
-  // Icons will be restored via tracking system, this is just for logging
-}
-
-/**
- * Perform fallback text cleanup by reversing medieval terms
- * This is a safety net in case the tracking system missed some changes
+ * Thực hiện fallback cleanup bằng cách reverse medieval terms
+ * Safety net phòng trường hợp tracking system bỏ sót
  */
 function performFallbackTextCleanup() {
-  const reverseMedievalTerms = createReverseMedievalTermsMap();
-  const textNodes = getTextNodes(document.body);
+  // Tạo reverse mapping: medieval -> original
+  const reverseTerms = Object.fromEntries(
+    Object.entries(MEDIEVAL_TERMS).map(([original, medieval]) => [
+      medieval,
+      original,
+    ])
+  );
 
-  textNodes.forEach((textNode) => {
+  // Reverse tất cả text nodes
+  getTextNodes(document.body).forEach((textNode) => {
     const originalText = textNode.nodeValue;
-    const restoredText = reverseTextReplacements(
-      originalText,
-      reverseMedievalTerms
-    );
+    let restoredText = originalText;
 
+    // Thay thế ngược lại từ medieval về original
+    Object.entries(reverseTerms).forEach(([medieval, original]) => {
+      if (restoredText.includes(medieval)) {
+        restoredText = restoredText.replace(
+          new RegExp(medieval, 'g'),
+          original
+        );
+      }
+    });
+
+    // Cập nhật nếu có thay đổi
     if (originalText !== restoredText) {
       textNode.nodeValue = restoredText;
-      console.log(
-        '[MedievalTheme] Reversed text replacements in fallback cleanup'
-      );
+      console.log('[MedievalTheme] Reversed text in fallback cleanup');
     }
   });
-}
-
-/**
- * Create a reverse mapping of medieval terms to original terms
- * @returns {Object} Reverse mapping object
- */
-function createReverseMedievalTermsMap() {
-  const reverseMedievalTerms = {};
-
-  Object.entries(MEDIEVAL_TERMS).forEach(([original, medieval]) => {
-    reverseMedievalTerms[medieval] = original;
-  });
-
-  return reverseMedievalTerms;
-}
-
-/**
- * Reverse medieval text replacements back to original terms
- * @param {string} text - Text with medieval terms
- * @param {Object} reverseMedievalTerms - Reverse mapping of terms
- * @returns {string} Text with original terms restored
- */
-function reverseTextReplacements(text, reverseMedievalTerms) {
-  let restoredText = text;
-
-  Object.entries(reverseMedievalTerms).forEach(([medieval, original]) => {
-    if (restoredText.includes(medieval)) {
-      restoredText = restoredText.replace(new RegExp(medieval, 'g'), original);
-    }
-  });
-
-  return restoredText;
 }

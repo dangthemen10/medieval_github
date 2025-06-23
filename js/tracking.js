@@ -102,7 +102,18 @@ export class MedievalTracker {
     const timestamp = Date.now();
     const random = Math.random().toString(36).substr(2, 9);
     const tagName = element.tagName.toLowerCase();
-    const className = element.className ? element.className.split(' ')[0] : '';
+
+    // Safe way to get className as a string
+    let className = '';
+    if (element.className) {
+      // Handle both string and SVGAnimatedString cases
+      const classNameStr =
+        typeof element.className === 'string'
+          ? element.className
+          : element.className.baseVal || element.className.toString();
+      className = classNameStr.split(' ')[0] || '';
+    }
+
     return `medieval_${tagName}_${className}_${timestamp}_${random}`;
   }
 
