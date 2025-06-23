@@ -185,7 +185,14 @@ function injectFlagStyles() {
           animation-duration: 1.5s !important;
           filter: brightness(1.2) !important;
           transform: scale(1.05) !important;
-        }
+          width: 100%;
+          z-index: 1;
+        } 
+
+       .flag-title:hover {
+        overflow: visible;
+        white-space: nowrap;
+      }
       `,
     });
     document.head.appendChild(flagStyle);
