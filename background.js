@@ -1,19 +1,16 @@
-// Khởi tạo khi extension được cài đặt
+// Khởi tạo extension với state mặc định
 chrome.runtime.onInstalled.addListener(() => {
   console.log('Medieval Github Extension installed!');
-
-  // Set default state
-  chrome.storage.sync.set({
-    medievalEnabled: false,
-  });
+  chrome.storage.sync.set({ medievalEnabled: false });
 });
 
-// Lắng nghe messages từ popup và content script
+// Xử lý tất cả messages từ popup và content script
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log('Background received message:', message);
 
   switch (message.action) {
     case 'toggleMedieval':
+      // Bật/tắt Medieval mode
       handleToggleMedieval(message.enabled, sender.tab?.id);
       break;
 
@@ -25,55 +22,49 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       return true; // Báo cho Chrome biết sẽ response async
 
     case 'pageLoaded':
-      // Khi trang GitHub mới load, check state và apply nếu cần
+      // Khi trang GitHub mới load, apply Medieval mode nếu đang enabled
       handlePageLoaded(sender.tab?.id);
       break;
   }
 });
 
-// Xử lý toggle Medieval mode
+// Xử lý toggle Medieval mode và sync với tất cả tabs GitHub
 async function handleToggleMedieval(enabled, tabId) {
   try {
-    // Lưu state
+    // Lưu state vào storage
     await chrome.storage.sync.set({ medievalEnabled: enabled });
 
-    // Gửi message đến content script nếu có tabId
-    if (tabId) {
-      chrome.tabs
-        .sendMessage(tabId, {
-          action: 'applyMedievalMode',
-          enabled: enabled,
-        })
-        .catch((err) => {
-          console.log('Tab might be closed or not ready:', err);
-        });
-    }
-
-    // Gửi đến tất cả tabs GitHub đang mở
+    // Lấy tất cả tabs GitHub đang mở
     const tabs = await chrome.tabs.query({ url: '*://github.com/*' });
-    tabs.forEach((tab) => {
+
+    // Gửi message đến tất cả tabs để apply/remove Medieval mode
+    const messagePromises = tabs.map((tab) =>
       chrome.tabs
         .sendMessage(tab.id, {
           action: 'applyMedievalMode',
           enabled: enabled,
         })
         .catch((err) => {
-          console.log('Could not send message to tab:', tab.id, err);
-        });
-    });
+          console.log(`Could not send message to tab ${tab.id}:`, err);
+        })
+    );
+
+    await Promise.all(messagePromises);
   } catch (error) {
     console.error('Error in handleToggleMedieval:', error);
   }
 }
 
-// Xử lý khi trang mới được load
+// Apply Medieval mode cho trang mới load nếu đang enabled
 async function handlePageLoaded(tabId) {
+  if (!tabId) return;
+
   try {
     const result = await chrome.storage.sync.get(['medievalEnabled']);
     const enabled = result.medievalEnabled || false;
 
-    if (enabled && tabId) {
-      // Delay một chút để đảm bảo DOM đã load xong
+    if (enabled) {
+      // Delay để đảm bảo DOM đã load xong
       setTimeout(() => {
         chrome.tabs
           .sendMessage(tabId, {
@@ -90,9 +81,9 @@ async function handlePageLoaded(tabId) {
   }
 }
 
-// Theo dõi khi tab được update (navigation)
+// Theo dõi navigation trên GitHub và auto-apply Medieval mode
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  // Chỉ xử lý khi trang load xong và là trang GitHub
+  // Chỉ xử lý khi trang load hoàn tất và là GitHub
   if (
     changeInfo.status === 'complete' &&
     tab.url &&
@@ -101,20 +92,3 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     handlePageLoaded(tabId);
   }
 });
-
-// Xử lý khi extension action được click (nếu không có popup)
-chrome.action.onClicked.addListener(async (tab) => {
-  // Code này chỉ chạy nếu không có popup
-  // Vì bạn đã có popup rồi nên phần này không cần thiết
-  console.log('Extension icon clicked on tab:', tab.id);
-});
-
-// Utility function để log state
-async function logCurrentState() {
-  try {
-    const result = await chrome.storage.sync.get(['medievalEnabled']);
-    console.log('Current Medieval mode state:', result.medievalEnabled);
-  } catch (error) {
-    console.error('Error getting state:', error);
-  }
-}
