@@ -12,8 +12,12 @@
 
 body {
   font-family: 'Uncial Antiqua', 'IM Fell English', serif;
-  background: url('chrome-extension://__MSG_@@extension_id__/icon/background.png')
-    no-repeat center center fixed !important;
+  background: linear-gradient(
+      rgba(244, 230, 195, 0.6),
+      rgba(244, 230, 195, 0.6)
+    ),
+    url('chrome-extension://__MSG_@@extension_id__/icon/background.png')
+      no-repeat center center fixed !important;
   background-size: cover !important;
   color: var(--text-dark) !important;
   transition: background 0.5s ease-in-out;
@@ -81,7 +85,13 @@ button:hover {
 /* Tương thích Dark Mode */
 @media (prefers-color-scheme: dark) {
   body {
-    background-color: var(--parchment-bg) !important;
+    background: linear-gradient(
+        rgba(237, 176, 130, 0.5),
+        rgba(239, 181, 140, 0.5)
+      ),
+      url('chrome-extension://__MSG_@@extension_id__/icon/background.png')
+        no-repeat center center fixed !important;
+    background-size: cover !important;
   }
   .navbar,
   .header {
