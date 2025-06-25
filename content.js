@@ -1,55 +1,4 @@
-// Từ điển thuật ngữ Trung Cổ
-const medievalTerms = {
-  'Pull requests': 'Nhiệm vụ',
-  Repositories: 'Vương quốc',
-  Organization: 'Bang hội',
-  Organizations: 'Danh Sách Bang hội',
-  Issues: 'Thỉnh nguyện thư',
-  Commits: 'Lời thề',
-  Merged: 'Liên minh',
-  Fork: 'Nhánh của vương quốc',
-  Star: 'Vương miện',
-  Watch: 'Gián điệp',
-  Owner: 'Quốc vương',
-  Admin: 'Công tước',
-  Contributor: 'Kỵ sĩ',
-  Member: 'Dân làng',
-  Release: 'Chiếu chỉ Hoàng gia',
-  Releases: 'Chiếu chỉ Hoàng gia',
-  Discussion: 'Hội đồng Hoàng gia',
-  Home: 'Thành trì',
-  Dashboard: 'Bản đồ vương quốc',
-  'Top repositories': 'Vương quốc hùng mạnh',
-  'Your teams': 'Hội hiệp sĩ',
-  Code: 'Bản thánh chỉ',
-  Actions: 'Hành động chiến trận',
-  Projects: 'Chiến dịch',
-  Security: 'Bảo vệ thành trì',
-  Insights: 'Lời tiên tri',
-  Settings: 'Chỉnh trị vương quốc',
-  Unwatch: 'Ngừng do thám',
-  'Your profile': 'Chân dung Bá tước',
-  'Your repositories': 'Vương quốc của người',
-  'Your Copilot': 'Cố vấn hoàng gia',
-  'Your projects': 'Chiến dịch của người',
-  'Your stars': 'Vương miện đã ban',
-  'Your gists': 'Bí kíp hoàng gia',
-  'GitHub Website': 'Lâu đài GitHub',
-  'GitHub Docs': 'Thư viện Hoàng gia',
-  'GitHub Support': 'Sứ giả hoàng gia',
-  'GitHub Community': 'Công hội lập trình',
-  'Sign out': 'Thoái vị',
-  'Your organizations': 'Bang hội của người',
-  'Your sponsors': 'Nhà tài trợ hoàng gia',
-  'Your enterprises': 'Thương hội hùng mạnh',
-  'Try Enterprise': 'Dùng thử thương hội',
-  'Feature preview': 'Báo cáo của Ngự sử',
-  'Latest changes': 'Sắc lệnh mới nhất',
-  'Explore repositories': 'Phiêu lưu khám phá vương quốc',
-  Filter: 'Tìm kiếm cổ thư',
-  Wiki: 'Sử thi vương quốc',
-  'Popular repositories': 'KINGDOMS',
-};
+import { MEDIEVAL_TERMS } from './js/constants.js';
 
 function replaceSvgIcon(parent, original) {
   if (!parent) return;
@@ -1106,9 +1055,9 @@ function applyMedievalTheme(node = document.body) {
     let text = textNode.nodeValue;
     let parent = textNode.parentElement.parentNode;
 
-    Object.keys(medievalTerms).forEach((original) => {
+    Object.keys(MEDIEVAL_TERMS).forEach((original) => {
       if (text.includes(original)) {
-        textNode.nodeValue = text.replace(original, medievalTerms[original]);
+        textNode.nodeValue = text.replace(original, MEDIEVAL_TERMS[original]);
         replaceSvgIcon(parent, original);
       }
     });
