@@ -3,6 +3,7 @@ import { setupDragScroll } from './dragScroll.js';
 import { createFlag, createCastleImage } from './flag.js';
 import { CASTLE_POSITIONS } from './constants.js';
 import { trackCreated, trackModified } from './tracking.js';
+import { getResourceUrl } from './utils.js';
 
 // Hàm redesign pinned repositories section
 export function redesignPinnedRepos() {
@@ -41,10 +42,10 @@ export function redesignPinnedRepos() {
       innerHTML: pinnedContainer.innerHTML,
     });
 
-    const medievalMapBackground = chrome.runtime.getURL(
-      'icon/background_map.png'
+    const medievalMapBackground = getResourceUrl(
+      'assets/icon/background_map.png'
     );
-    const customFrameUrl = chrome.runtime.getURL('icon/frame_map.png');
+    const customFrameUrl = getResourceUrl('assets/icon/frame_map.png');
 
     // Tạo container wrapper cho toàn bộ phần tử
     const frameWrapper = document.createElement('div');

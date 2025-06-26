@@ -1,4 +1,5 @@
 import { MEDIEVAL_TERMS } from './js/constants.js';
+import { getResourceUrl } from './js/utils.js';
 
 function replaceSvgIcon(parent, original) {
   if (!parent) return;
@@ -6,8 +7,8 @@ function replaceSvgIcon(parent, original) {
   let svgElement = parent.querySelector('svg');
   if (svgElement && svgElement.parentNode === parent) {
     let newIcon = document.createElement('img');
-    newIcon.src = chrome.runtime.getURL(
-      `icon/${original.toLowerCase().replace(/\s+/g, '-')}.png`
+    newIcon.src = getResourceUrl(
+      `assets/icon/${original.toLowerCase().replace(/\s+/g, '-')}.png`
     );
     newIcon.style.width = '16px';
     newIcon.style.height = '16px';
@@ -55,7 +56,7 @@ const flagColors = [
 // Hàm tạo castle image element
 function createCastleImage() {
   const castleImg = document.createElement('img');
-  castleImg.src = chrome.runtime.getURL('icon/castle.png');
+  castleImg.src = getResourceUrl('assets/icon/castle.png');
   castleImg.alt = 'Castle';
   castleImg.style.cssText = `
       width: 120px;
@@ -279,7 +280,7 @@ function redesignProfileSection() {
     return;
   }
 
-  const frameAvatarBackground = chrome.runtime.getURL('icon/frame_avt.png');
+  const frameAvatarBackground = getResourceUrl('assets/icon/frame_avt.png');
 
   // Lấy element đầu tiên (index 1 - nodeChild thứ hai)
   const targetElement = profileContainer.childNodes[1];
@@ -445,8 +446,8 @@ function redesignProfileSection() {
     checkLengthProfileContainer === 7
       ? profileContainer.childNodes.item(7).nextSibling
       : checkLengthProfileContainer === 9
-        ? profileContainer.childNodes.item(11).nextSibling
-        : profileContainer.lastElementChild;
+      ? profileContainer.childNodes.item(11).nextSibling
+      : profileContainer.lastElementChild;
 
   console.log('targetElement6', targetElement6);
   if (!targetElement6) {
@@ -456,7 +457,7 @@ function redesignProfileSection() {
 
   targetElement6.classList.remove('border-top', 'color-border-muted', 'mt-3');
 
-  const frameOrgBackground = chrome.runtime.getURL('icon/frame_org.png');
+  const frameOrgBackground = getResourceUrl('assets/icon/frame_org.png');
 
   // Lấy thẻ h2 và các thẻ a
   const h2Element = targetElement6.querySelector('h2');
@@ -516,7 +517,7 @@ padding: 0 20px;
 `;
 
   // URL của hình shield (bạn cần upload hình này vào extension)
-  const shieldImageUrl = chrome.runtime.getURL('icon/listOrg.png'); // Thay đổi path cho phù hợp
+  const shieldImageUrl = getResourceUrl('assets/icon/listOrg.png'); // Thay đổi path cho phù hợp
 
   // Tạo CSS cho medieval shield với background image
   let shieldStyles = `
@@ -692,12 +693,12 @@ function redesignPinnedRepos() {
   if (pinnedContainer) {
     console.log('Found pinned container:', pinnedContainer);
 
-    const medievalMapBackground = chrome.runtime.getURL(
-      'icon/background_map.png'
+    const medievalMapBackground = getResourceUrl(
+      'assets/icon/background_map.png'
     );
 
     // URL cho hình khung custom
-    const customFrameUrl = chrome.runtime.getURL('icon/frame_map.png');
+    const customFrameUrl = getResourceUrl('assets/icon/frame_map.png');
 
     // Tạo container wrapper cho toàn bộ phần tử
     const frameWrapper = document.createElement('div');

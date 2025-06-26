@@ -1,4 +1,5 @@
 import { trackModified, trackCreated } from './tracking.js';
+import { getResourceUrl } from './utils.js';
 
 /**
  * Main function to redesign GitHub profile section with medieval theme
@@ -118,7 +119,7 @@ function extractAndHideNameInfo() {
  * Apply medieval frame background styles to profile element
  */
 function applyProfileFrameStyles(targetElement) {
-  const frameAvatarBackground = chrome.runtime.getURL('icon/frame_avt.png');
+  const frameAvatarBackground = getResourceUrl('assets/icon/frame_avt.png');
 
   trackModified(targetElement, {
     style: targetElement.style.cssText,
@@ -175,7 +176,6 @@ function addNameContainer(targetElement, nameInfo) {
     trackCreated(fullNameElement, 'redesigned-fullname');
     nameContainer.appendChild(fullNameElement);
   }
-
 
   // Add username if available
   if (nameInfo.username) {
@@ -312,7 +312,7 @@ function getOrganizationTargetElement(profileContainer, checkLength) {
  * Apply medieval frame styles to organization section
  */
 function applyOrganizationFrameStyles(targetElement, orgCount) {
-  const frameOrgBackground = chrome.runtime.getURL('icon/frame_org.png');
+  const frameOrgBackground = getResourceUrl('assets/icon/frame_org.png');
 
   trackModified(targetElement, {
     style: targetElement.style.cssText,
@@ -432,7 +432,7 @@ function styleOrganizationAvatars(aElements, avatarOrgContainer) {
  * Add CSS styles for medieval shields
  */
 function addMedievalShieldStyles(isSmallGroup) {
-  const shieldImageUrl = chrome.runtime.getURL('icon/listOrg.png');
+  const shieldImageUrl = getResourceUrl('assets/icon/listOrg.png');
   const shieldSize = isSmallGroup
     ? { width: '80px', height: '70px' }
     : { width: '70px', height: '60px' };
@@ -527,7 +527,9 @@ function styleOrganizationLink(aElement, isSmallGroup) {
 
 function styleUserProfileBio() {
   const bioText = document.querySelector('.user-profile-bio');
-  const userBadgeContainer = document.querySelector('.user-status-circle-badge-container');
+  const userBadgeContainer = document.querySelector(
+    '.user-status-circle-badge-container'
+  );
   const userBadge = document.querySelector('.user-status-circle-badge');
   if (bioText) {
     bioText.style.cssText = `  
@@ -538,10 +540,10 @@ function styleUserProfileBio() {
     font-size: 14px;
     color: #713535;
     font-family: "Unkempt", cursive;
-    `
+    `;
   }
 
   if (userBadgeContainer && userBadge) {
-    userBadgeContainer.style.cssText = 'margin-bottom: 0;'
+    userBadgeContainer.style.cssText = 'margin-bottom: 0;';
   }
 }
