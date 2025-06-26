@@ -23,7 +23,7 @@ export function redesignProfileSection() {
   // Redesign organization section
   redesignOrganizationSection(profileContainer);
 
-  styleUserProfileBio();
+  styleUserProfileBio(profileContainer);
 
   console.log('GitHub profile section redesigned successfully');
 }
@@ -525,19 +525,21 @@ function styleOrganizationLink(aElement, isSmallGroup) {
   }
 }
 
-function styleUserProfileBio() {
+function styleUserProfileBio(profileContainer) {
   const bioText = document.querySelector('.user-profile-bio');
   const userBadgeContainer = document.querySelector('.user-status-circle-badge-container');
   const userBadge = document.querySelector('.user-status-circle-badge');
-  if (bioText) {
+
+  if (profileContainer && bioText) {
+    profileContainer.style.cssText = `position: relative;`
     bioText.style.cssText = `  
-    position: absolute;
-    top: 355px;
-    left: 145px;
-    overflow: hidden;
-    font-size: 14px;
-    color: #713535;
-    font-family: "Unkempt", cursive;
+      position: absolute;
+      top: 255px;
+      left: 125px;
+      overflow: hidden;
+      font-size: 14px;
+      color: #713535;
+      font-family: "Unkempt", cursive;
     `
   }
 
