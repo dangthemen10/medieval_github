@@ -1,6 +1,8 @@
 /* Medieval Theme for GitHub */
 
+@import url('https://fonts.googleapis.com/css2?family=Unlock&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Uncial+Antiqua&family=IM+Fell+English&family=Cinzel&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Unkempt:wght@400;700&display=swap');
 
 :root {
   --parchment-bg: #f4e6c3;

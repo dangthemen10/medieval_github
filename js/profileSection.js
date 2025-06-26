@@ -23,6 +23,8 @@ export function redesignProfileSection() {
   // Redesign organization section
   redesignOrganizationSection(profileContainer);
 
+  styleUserProfileBio();
+
   console.log('GitHub profile section redesigned successfully');
 }
 
@@ -126,13 +128,15 @@ function applyProfileFrameStyles(targetElement) {
 
   targetElement.style.cssText = `
     background-image: url('${frameAvatarBackground}');
-    background-size: 150% 100%;
+    background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     position: relative;
+    display: flex !important;
+    flex-direction: column;
+    justify-content: center;
     width: 360px;
-    height: 498px;
-    padding: 32px 113px 60px 78px;
+    padding: 15px 100px 130px 70px;
     align-items: center;
   `;
 }
@@ -160,21 +164,18 @@ function addNameContainer(targetElement, nameInfo) {
       `
       font-size: 1.5rem;
       font-weight: 600;
-      color: #24292f;
+      color: #F1C488;
       margin: 0 0 8px 0;
       line-height: 1.3;
+      font-family: "Unlock", serif;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #E7BA77;
     `
     );
     trackCreated(fullNameElement, 'redesigned-fullname');
     nameContainer.appendChild(fullNameElement);
   }
 
-  // Add separator if both name and username exist
-  if (nameInfo.fullName && nameInfo.username) {
-    const separator = createSeparator();
-    trackCreated(separator, 'redesigned-separator');
-    nameContainer.appendChild(separator);
-  }
 
   // Add username if available
   if (nameInfo.username) {
@@ -182,9 +183,9 @@ function addNameContainer(targetElement, nameInfo) {
       'p',
       nameInfo.username,
       `
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 400;
-      color: #656d76;
+      color: #ffffff;
       margin: 0;
       font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
     `
@@ -193,28 +194,7 @@ function addNameContainer(targetElement, nameInfo) {
     nameContainer.appendChild(usernameElement);
   }
 
-  // Add separator for username-only case
-  if (!nameInfo.fullName) {
-    const separator = createSeparator();
-    trackCreated(separator, 'redesigned-separator-alt');
-    nameContainer.appendChild(separator);
-  }
-
   targetElement.insertBefore(nameContainer, targetElement.firstChild);
-}
-
-/**
- * Create a styled separator element
- */
-function createSeparator() {
-  const separator = document.createElement('hr');
-  separator.style.cssText = `
-    border: none;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, #d0d7de, transparent);
-    margin: 10px 0;
-  `;
-  return separator;
 }
 
 /**
@@ -238,6 +218,7 @@ function styleAvatarContainer(targetElement) {
   avatarContainer.style.cssText = `
     z-index: 4;
     transition: transform 0.3s ease;
+    width: 150px;
   `;
 
   const avatarImg = avatarContainer.querySelector('.avatar');
@@ -541,5 +522,26 @@ function styleOrganizationLink(aElement, isSmallGroup) {
       border: 2px solid #ffffff;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     `;
+  }
+}
+
+function styleUserProfileBio() {
+  const bioText = document.querySelector('.user-profile-bio');
+  const userBadgeContainer = document.querySelector('.user-status-circle-badge-container');
+  const userBadge = document.querySelector('.user-status-circle-badge');
+  if (bioText) {
+    bioText.style.cssText = `  
+    position: absolute;
+    top: 355px;
+    left: 145px;
+    overflow: hidden;
+    font-size: 14px;
+    color: #713535;
+    font-family: "Unkempt", cursive;
+    `
+  }
+
+  if (userBadgeContainer && userBadge) {
+    userBadgeContainer.style.cssText = 'margin-bottom: 0;'
   }
 }

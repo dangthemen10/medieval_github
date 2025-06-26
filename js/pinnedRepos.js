@@ -279,9 +279,12 @@ export function redesignPinnedRepos() {
             'drop-shadow(0 6px 12px rgba(0,0,0,0.4)) brightness(1.2)';
           flag.style.transform = 'translateX(-50%) scale(1.1)';
           const flagEl = flag.querySelector('.medieval-flag');
+          const flagTitle = flag.querySelector('.flag-title');
           if (flagEl) {
             flagEl.style.animationDuration = '1.5s';
             flagEl.style.filter = 'brightness(1.2)';
+            flagEl.style.width = '150px';
+            flagTitle.style.overflow = 'visible';
           }
         });
 
@@ -290,9 +293,12 @@ export function redesignPinnedRepos() {
           castleImg.style.filter = 'drop-shadow(0 4px 8px rgba(0,0,0,0.3))';
           flag.style.transform = 'translateX(-50%) scale(1)';
           const flagEl = flag.querySelector('.medieval-flag');
+          const flagTitle = flag.querySelector('.flag-title');
           if (flagEl) {
             flagEl.style.animationDuration = '3s';
             flagEl.style.filter = 'brightness(1)';
+            flagEl.style.width = '100px';
+            flagTitle.style.overflow = 'hidden';
           }
         });
 
