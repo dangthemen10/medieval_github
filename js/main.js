@@ -313,8 +313,8 @@ function setupObserver() {
           if (node.nodeType === Node.ELEMENT_NODE) {
             const trackedElements = node.querySelectorAll
               ? node.querySelectorAll(
-                  '[data-medieval-created], [data-medieval-modified]'
-                )
+                '[data-medieval-created], [data-medieval-modified]'
+              )
               : [];
 
             if (
@@ -324,16 +324,6 @@ function setupObserver() {
             ) {
               console.log('🔄 Tracked element removed, may need reapply');
               shouldReapply = true;
-            }
-          }
-        });
-
-        // Check if new GitHub elements were added
-        mutation.addedNodes.forEach((node) => {
-          if (node.nodeType === Node.ELEMENT_NODE && node.querySelector) {
-            if (node.querySelector('.js-pinned-items-reorder-container')) {
-              console.log('🔄 Pinned container added, reapplying...');
-              setTimeout(() => redesignPinnedRepos(), 100);
             }
           }
         });
