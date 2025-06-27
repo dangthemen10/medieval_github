@@ -44,9 +44,7 @@ export function replaceSvgIcon(parent, original) {
   const svgElement = parent.querySelector('svg');
   if (svgElement && svgElement.parentNode === parent) {
     const newIcon = document.createElement('img');
-    newIcon.src = chrome.runtime.getURL(
-      `icon/${original.toLowerCase().replace(/\s+/g, '-')}.png`
-    );
+    newIcon.src = getResourceUrl(`assets/icon/${original.toLowerCase()}.png`);
     newIcon.style.width = '16px';
     newIcon.style.height = '16px';
     newIcon.style.marginRight = '5px';

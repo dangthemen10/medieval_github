@@ -1,4 +1,5 @@
 import { FLAG_COLORS } from './constants.js';
+import { getResourceUrl } from './utils.js';
 
 /**
  * Tạo lá cờ medieval với animation cho repository
@@ -251,7 +252,7 @@ function createElement(tag, props = {}) {
 export function createCastleImage() {
   return createElement('img', {
     dataset: { medievalCreated: 'true' },
-    src: chrome.runtime.getURL('icon/castle.png'),
+    src: getResourceUrl('assets/icon/castle.png'),
     alt: 'Castle',
     style: `
       width: 120px; height: 120px; object-fit: contain;

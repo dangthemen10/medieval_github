@@ -4,9 +4,9 @@
   "version": "1.0",
   "description": "Turn Github into a medieval kingdom!",
   "icons": {
-    "16": "icon/icon16.png",
-    "48": "icon/icon48.png",
-    "128": "icon/icon128.png"
+    "16": "assets/icon/icon16.png",
+    "48": "assets/icon/icon48.png",
+    "128": "assets/icon/icon128.png"
   },
   "action": {
     "default_popup": "popup.html",
@@ -25,7 +25,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["icon/*.png", "css/style.css"],
+      "resources": ["assets/icon/*.png", "css/style.css", "assets/fonts/*.ttf"],
       "matches": ["https://github.com/*"]
     }
   ],

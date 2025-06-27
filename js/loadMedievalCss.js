@@ -1,5 +1,7 @@
 // ===== CSS MANAGEMENT =====
 
+import { getResourceUrl } from './utils';
+
 let medievalStyleSheet = null;
 
 /**
@@ -19,7 +21,7 @@ export function loadMedievalCSS() {
     Object.assign(medievalStyleSheet, {
       rel: 'stylesheet',
       type: 'text/css',
-      href: chrome.runtime.getURL('css/style.css'),
+      href: getResourceUrl('css/style.css'),
       id: 'medieval-css',
     });
 

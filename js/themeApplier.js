@@ -1,5 +1,6 @@
 import { MEDIEVAL_TERMS } from './constants.js';
 import { trackModified } from './tracking.js';
+import { getResourceUrl } from './utils.js';
 
 /**
  * Áp dụng theme medieval cho text và icons trên trang
@@ -120,8 +121,8 @@ function createMedievalIcon(term) {
   const icon = document.createElement('img');
   const iconPath = term.toLowerCase().replace(/\s+/g, '-');
 
-  // Cấu hình icon
-  icon.src = chrome.runtime.getURL(`icon/${iconPath}.png`);
+  // Icon configuration
+  icon.src = getResourceUrl(`assets/icon/${iconPath}.png`);
   icon.style.cssText = 'width: 16px; height: 16px; margin-right: 5px;';
   icon.dataset.medievalIcon = 'true';
   icon.dataset.originalTerm = term;

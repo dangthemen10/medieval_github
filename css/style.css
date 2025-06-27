@@ -1,4 +1,10 @@
 /* Medieval Theme for GitHub */
+@font-face {
+  font-family: 'UnifrakturCook';
+  src: url('/assets/fonts/UnifrakturCook-Bold.ttf');
+  font-weight: 700;
+  font-style: normal;
+}
 
 @import url('https://fonts.googleapis.com/css2?family=Unlock&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Uncial+Antiqua&family=IM+Fell+English&family=Cinzel&display=swap');
@@ -13,12 +19,12 @@
 }
 
 body {
-  font-family: 'Uncial Antiqua', 'IM Fell English', serif;
+  font-family: 'UnifrakturCook', cursive;
   background: linear-gradient(
       rgba(244, 230, 195, 0.6),
       rgba(244, 230, 195, 0.6)
     ),
-    url('chrome-extension://__MSG_@@extension_id__/icon/background.png')
+    url('chrome-extension://__MSG_@@extension_id__/assets/icon/background.png')
       no-repeat center center fixed !important;
   background-size: cover !important;
   color: var(--text-dark) !important;
@@ -26,10 +32,10 @@ body {
 }
 
 .medieval-header-container {
-  font-family: 'Uncial Antiqua', 'IM Fell English', serif;
+  font-family: 'UnifrakturCook', cursive;
 }
 
-/* Navbar - Thanh điều hướng Gỗ */
+/* Navbar - Wooden Navigation Bar */
 .navbar,
 .header {
   background-color: var(--wood-dark) !important;
@@ -37,7 +43,7 @@ body {
   border-bottom: 3px solid var(--border-golden);
 }
 
-/* Button - Nút bấm Hoàng Gia */
+/* Button - Royal Button */
 button {
   font-weight: bold;
   border: 2px solid var(--border-golden);
@@ -49,7 +55,7 @@ button:hover {
   transform: scale(1.05);
 }
 
-/* Box & Cards - Cuộn Giấy Da */
+/* Box & Cards - Parchment Scroll */
 .card,
 .box,
 .borderGrid {
@@ -66,7 +72,7 @@ button:hover {
   transform: rotate(-2deg);
 }
 
-/* Chữ Lửa Cháy */
+/* Flaming Text Animation */
 @keyframes fireText {
   0% {
     text-shadow: 0 0 5px #ff4500;
@@ -84,14 +90,14 @@ button:hover {
   font-weight: bold;
 }
 
-/* Tương thích Dark Mode */
+/* Dark Mode Compatibility */
 @media (prefers-color-scheme: dark) {
   body {
     background: linear-gradient(
         rgba(237, 176, 130, 0.5),
         rgba(239, 181, 140, 0.5)
       ),
-      url('chrome-extension://__MSG_@@extension_id__/icon/background.png')
+      url('chrome-extension://__MSG_@@extension_id__/assets/icon/background.png')
         no-repeat center center fixed !important;
     background-size: cover !important;
   }
