@@ -11,7 +11,6 @@ export function redesignProfileSection() {
   );
 
   if (!layoutSideBar || !profileContainer) {
-    console.warn('Required containers not found');
     return;
   }
 
@@ -25,8 +24,6 @@ export function redesignProfileSection() {
   redesignOrganizationSection(profileContainer);
 
   styleUserProfileBio(profileContainer);
-
-  console.log('GitHub profile section redesigned successfully');
 }
 
 /**
@@ -55,7 +52,6 @@ function applyLayoutStyles(layoutSideBar) {
 function redesignProfileHeader(profileContainer) {
   const targetElement = profileContainer.childNodes[1];
   if (!targetElement) {
-    console.warn('Target element not found');
     return;
   }
 
@@ -81,24 +77,11 @@ function extractAndHideNameInfo() {
   const vcardContainer = document.querySelector('.vcard-names-container');
   if (!vcardContainer) return null;
 
-  // Store original state for restoration
+  // Get computed styles BEFORE modification
   const computedStyle = window.getComputedStyle(vcardContainer);
-  trackModified(vcardContainer, {
-    style: vcardContainer.style.cssText,
-    className: vcardContainer.className,
-    innerHTML: vcardContainer.innerHTML,
-    computedDisplay: computedStyle.display,
-    computedVisibility: computedStyle.visibility,
-    computedOpacity: computedStyle.opacity,
-    inlineDisplay: vcardContainer.style.display || '',
-    inlineVisibility: vcardContainer.style.visibility || '',
-    inlineOpacity: vcardContainer.style.opacity || '',
-    wasOriginallyVisible:
-      computedStyle.display !== 'none' && computedStyle.visibility !== 'hidden',
-    originalComputedDisplay: computedStyle.display,
-  });
+  const originalInlineStyle = vcardContainer.style.cssText || '';
 
-  // Extract name information
+  // Extract name information BEFORE hiding
   const fullName = vcardContainer
     .querySelector('.vcard-fullname')
     ?.textContent?.trim();
@@ -106,11 +89,27 @@ function extractAndHideNameInfo() {
     .querySelector('.vcard-username')
     ?.textContent?.trim();
 
-  // Hide original container
+  const trackingData = {
+    style: originalInlineStyle,
+    className: vcardContainer.className,
+    innerHTML: vcardContainer.innerHTML,
+    // Only store what we actually need for restoration
+    originalDisplay: computedStyle.display,
+    originalVisibility: computedStyle.visibility,
+    originalOpacity: computedStyle.opacity,
+    wasVisible:
+      computedStyle.display !== 'none' && computedStyle.visibility !== 'hidden',
+  };
+
+  trackModified(vcardContainer, trackingData);
+
+  // Hide the container
   vcardContainer.style.display = 'none';
   vcardContainer.style.visibility = 'hidden';
   vcardContainer.dataset.medievalHidden = 'true';
-  vcardContainer.dataset.medievalOriginalDisplay = computedStyle.display;
+  vcardContainer.dataset.wasVisible = trackingData.wasVisible
+    ? 'true'
+    : 'false';
 
   return { fullName: fullName || '', username: username || '' };
 }
@@ -257,7 +256,6 @@ function styleAvatarContainer(targetElement) {
  */
 function redesignOrganizationSection(profileContainer) {
   const checkLength = profileContainer.children.length;
-  console.log('checkLengthProfileContainer', checkLength);
 
   // Determine target element based on container length
   const targetElement = getOrganizationTargetElement(
@@ -265,7 +263,6 @@ function redesignOrganizationSection(profileContainer) {
     checkLength
   );
   if (!targetElement) {
-    console.warn('Organization target element not found');
     return;
   }
 
@@ -274,7 +271,6 @@ function redesignOrganizationSection(profileContainer) {
   const aElements = targetElement.querySelectorAll('a[aria-label]');
 
   if (aElements.length <= 0) {
-    console.warn('No organization elements found');
     return;
   }
 
@@ -325,7 +321,6 @@ function applyOrganizationFrameStyles(targetElement, orgCount) {
   // Adjust height and padding based on organization count
   const isSmallGroup = orgCount <= 3;
   const height = isSmallGroup ? '300px' : '355px';
-  const paddingTop = isSmallGroup ? '90px' : '105px';
   const backgroundSize = isSmallGroup ? '100% 90%' : '100% 95%';
 
   targetElement.style.cssText = `
@@ -548,4 +543,83 @@ function styleUserProfileBio(profileContainer) {
   if (userBadgeContainer && userBadge) {
     userBadgeContainer.style.cssText = 'margin-bottom: 0;';
   }
+}
+
+function restoreVcardContainer() {
+  const vcardContainer = document.querySelector(
+    '.vcard-names-container[data-medieval-hidden="true"]'
+  );
+  if (!vcardContainer) {
+    return false;
+  }
+
+  try {
+    const medievalId = vcardContainer.dataset.medievalId;
+    if (!medievalId) {
+      return false;
+    }
+
+    const restored = medievalTracker.restoreModifiedElement(medievalId);
+
+    if (restored) {
+      return true;
+    }
+
+    // Clear problematic styles
+    vcardContainer.style.display = '';
+    vcardContainer.style.visibility = '';
+    vcardContainer.style.opacity = '';
+
+    // Check if it was originally visible
+    const wasVisible = vcardContainer.dataset.wasVisible === 'true';
+    if (wasVisible) {
+      // Force show if it was originally visible
+      vcardContainer.style.display = 'block';
+      vcardContainer.style.visibility = 'visible';
+    }
+
+    // Clean up medieval markers
+    delete vcardContainer.dataset.medievalHidden;
+    delete vcardContainer.dataset.wasVisible;
+    delete vcardContainer.dataset.medievalId;
+    delete vcardContainer.dataset.medievalModified;
+
+    // Force reflow
+    vcardContainer.offsetHeight;
+
+    // Verify restoration
+    const finalStyle = window.getComputedStyle(vcardContainer);
+    const isVisible =
+      finalStyle.display !== 'none' && finalStyle.visibility !== 'hidden';
+
+    return isVisible;
+  } catch (error) {
+    console.error('[ProfileSection] Error restoring vCard container:', error);
+    return false;
+  }
+}
+
+export function restoreProfileSection() {
+  const vcardRestored = restoreVcardContainer();
+  if (!vcardRestored) {
+    console.warn('[ProfileSection] Failed to restore vCard container');
+  }
+
+  const redesignedNameContainers = document.querySelectorAll(
+    '.redesigned-name-container'
+  );
+  redesignedNameContainers.forEach((container) => {
+    try {
+      if (container.parentNode) {
+        container.parentNode.removeChild(container);
+      }
+    } catch (error) {
+      console.warn(
+        '[ProfileSection] Error removing redesigned name container:',
+        error
+      );
+    }
+  });
+
+  return vcardRestored;
 }

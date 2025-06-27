@@ -15,7 +15,6 @@ export class MedievalTracker {
     element.dataset.medievalId = id;
     this.createdElements.add(element);
 
-    console.log(`[MedievalTracker] Created element tracked: ${id}`);
     return id;
   }
 
@@ -53,21 +52,12 @@ export class MedievalTracker {
       placeholder: originalData.placeholder || null,
       wasMoved: false,
 
-      // ✅ NEW: Store additional restoration data
+      // Store additional restoration data
       originalDisplay: originalData.originalDisplay || null,
       displayProperty: originalData.displayProperty || null,
     };
 
     this.modifications.set(id, modification);
-
-    console.log(`[MedievalTracker] Modified element tracked: ${id}`, {
-      hasOriginalParent: !!modification.originalParent,
-      hasOriginalSibling: !!modification.originalNextSibling,
-      hasPlaceholder: !!modification.placeholder,
-      originalDisplay: modification.originalDisplay,
-      currentParent: element.parentNode?.tagName || 'none',
-      isVcardContainer: element.classList.contains('vcard-names-container'),
-    });
 
     return id;
   }
@@ -80,7 +70,6 @@ export class MedievalTracker {
       modification.wasMoved = true;
       modification.movedFromParent = fromParent;
       modification.movedToParent = toParent;
-      console.log(`[MedievalTracker] Element move tracked: ${id}`);
     }
   }
 
@@ -127,13 +116,10 @@ export class MedievalTracker {
     return attrs;
   }
 
-  // ✅ ENHANCED: Add this method to MedievalTracker class
+  // Add this method to MedievalTracker class
   restoreModifiedElement(elementId) {
     const modification = this.modifications.get(elementId);
     if (!modification) {
-      console.warn(
-        `[MedievalTracker] No modification found for ID: ${elementId}`
-      );
       return false;
     }
 
@@ -147,7 +133,6 @@ export class MedievalTracker {
       originalNextSibling,
       placeholder,
       wasMoved,
-      // ✅ NEW: Additional restoration data for vcardContainer
       computedDisplay,
       computedVisibility,
       computedOpacity,
@@ -159,15 +144,6 @@ export class MedievalTracker {
     } = modification;
 
     try {
-      console.log(`[MedievalTracker] Starting restoration for ${elementId}`, {
-        tagName: element.tagName,
-        className: element.className,
-        isVcardContainer: element.classList.contains('vcard-names-container'),
-        medievalHidden: medievalHidden,
-        originalDisplayState: originalDisplayState,
-      });
-
-      // ✅ STEP 1: Restore DOM position first
       if (placeholder && document.contains(placeholder)) {
         placeholder.parentNode.insertBefore(element, placeholder);
         placeholder.remove();
@@ -186,18 +162,15 @@ export class MedievalTracker {
         }
       }
 
-      // ✅ STEP 2: Restore content BEFORE style (quan trọng cho vcardContainer)
       if (originalContent !== null && originalContent !== undefined) {
         element.innerHTML = originalContent;
-        console.log(`[MedievalTracker] Content restored for ${elementId}`);
       }
 
-      // ✅ STEP 3: Restore className
       if (originalClassName !== undefined) {
         element.className = originalClassName;
       }
 
-      // ✅ STEP 4: Enhanced style restoration
+      // Enhanced style restoration
       if (originalStyle !== undefined) {
         // Clear all current styles first
         element.style.cssText = '';
@@ -208,20 +181,17 @@ export class MedievalTracker {
         }
       }
 
-      // ✅ STEP 5: Special handling cho vcard-names-container và elements bị ẩn
+      // Special handling cho vcard-names-container và elements bị ẩn
       if (
         element.classList.contains('vcard-names-container') ||
         medievalHidden
       ) {
-        console.log('[MedievalTracker] Special restoration for hidden element');
-
-        // ✅ Remove medieval data attributes first
+        // Remove medieval data attributes first
         delete element.dataset.medievalHidden;
         delete element.dataset.medievalOriginalDisplay;
         delete element.dataset.medievalOriginalVisibility;
         delete element.dataset.medievalOriginalOpacity;
 
-        // ✅ CRITICAL: Restore display properties properly
         if (originalDisplayState && computedDisplay) {
           // Restore to original computed display if it was visible
           if (computedDisplay !== 'none') {
@@ -232,46 +202,21 @@ export class MedievalTracker {
           element.style.display = inlineDisplay || '';
         }
 
-        // ✅ Restore visibility and opacity
+        // Restore visibility and opacity
         element.style.visibility = inlineVisibility || '';
         element.style.opacity = inlineOpacity || '';
 
-        // ✅ CRITICAL: Force reflow để đảm bảo element hiển thị
         element.offsetHeight; // Trigger reflow
 
-        // ✅ EXTRA: Double-check visibility after restoration
         const afterRestoreStyle = window.getComputedStyle(element);
-        console.log('[MedievalTracker] vcardContainer restored:', {
-          beforeRestore: {
-            display: 'none',
-            visibility: 'hidden',
-          },
-          afterRestore: {
-            display: element.style.display,
-            computedDisplay: afterRestoreStyle.display,
-            visibility: element.style.visibility,
-            computedVisibility: afterRestoreStyle.visibility,
-            opacity: element.style.opacity,
-            computedOpacity: afterRestoreStyle.opacity,
-          },
-          hasContent: element.innerHTML.length > 0,
-          isVisible: element.offsetWidth > 0 && element.offsetHeight > 0,
-          isInDocument: document.contains(element),
-        });
 
-        // ✅ FALLBACK: If still not visible, force show
         if (afterRestoreStyle.display === 'none' && originalDisplayState) {
           element.style.display = computedDisplay || 'block';
           element.style.visibility = computedVisibility || 'visible';
           element.style.opacity = computedOpacity || '1';
-
-          console.log(
-            '[MedievalTracker] Fallback restoration applied for vcardContainer'
-          );
         }
       }
 
-      // ✅ STEP 6: Restore attributes
       if (originalAttributes) {
         Object.keys(originalAttributes).forEach((attrName) => {
           if (!attrName.startsWith('data-medieval')) {
@@ -284,20 +229,11 @@ export class MedievalTracker {
         });
       }
 
-      // ✅ STEP 7: Clean up tracking attributes
       delete element.dataset.medievalModified;
       delete element.dataset.medievalId;
 
       this.modifications.delete(elementId);
 
-      console.log(
-        `[MedievalTracker] Successfully restored element: ${elementId}`,
-        {
-          finalDisplay: window.getComputedStyle(element).display,
-          finalVisibility: window.getComputedStyle(element).visibility,
-          isVisible: element.offsetWidth > 0 && element.offsetHeight > 0,
-        }
-      );
       return true;
     } catch (error) {
       console.error(
@@ -308,7 +244,6 @@ export class MedievalTracker {
     }
   }
 
-  // ✅ NEW: Find best parent for orphaned elements
   findBestParentForElement(element) {
     // Priority order for GitHub elements
     const potentialParents = [
@@ -336,20 +271,14 @@ export class MedievalTracker {
     if (element && element.parentNode) {
       element.parentNode.removeChild(element);
       this.createdElements.delete(element);
-      console.log(`[MedievalTracker] Removed created element`);
     }
   }
 
-  // ✅ ENHANCED: Cleanup với placeholder handling và ordered restoration
+  // Cleanup với placeholder handling và ordered restoration
   cleanup() {
-    console.log(
-      '[MedievalTracker] Starting enhanced cleanup with placeholder support...'
-    );
-
     let restoredCount = 0;
     let removedCount = 0;
 
-    // ✅ Step 1: Restore modified elements BEFORE removing created elements
     // Sort by element depth (deeper elements first to avoid parent-child conflicts)
     const modificationEntries = Array.from(this.modifications.entries());
     modificationEntries.sort(([, modA], [, modB]) => {
@@ -364,7 +293,7 @@ export class MedievalTracker {
       }
     });
 
-    // ✅ Step 2: Remove created elements (now that modified elements are restored)
+    // Remove created elements (now that modified elements are restored)
     const createdElementsArray = Array.from(this.createdElements);
     createdElementsArray.forEach((element) => {
       try {
@@ -380,7 +309,7 @@ export class MedievalTracker {
       }
     });
 
-    // ✅ Step 3: Clean up any remaining placeholders
+    // Clean up any remaining placeholders
     this.placeholders.forEach((placeholder, elementId) => {
       try {
         if (placeholder && placeholder.parentNode) {
@@ -394,23 +323,19 @@ export class MedievalTracker {
       }
     });
 
-    // ✅ Step 4: Enhanced fallback cleanup
+    // Enhanced fallback cleanup
     this.fallbackCleanup();
 
-    // ✅ Step 5: Clear all tracking data
+    // Clear all tracking data
     this.modifications.clear();
     this.createdElements.clear();
     this.placeholders.clear();
     this.originalStyles.clear();
     this.originalContent.clear();
     this.originalAttributes.clear();
-
-    console.log(
-      `[MedievalTracker] Enhanced cleanup completed. Restored: ${restoredCount}, Removed: ${removedCount}`
-    );
   }
 
-  // ✅ NEW: Get element depth in DOM tree
+  // Get element depth in DOM tree
   getElementDepth(element) {
     let depth = 0;
     let current = element;
@@ -421,7 +346,7 @@ export class MedievalTracker {
     return depth;
   }
 
-  // ✅ ENHANCED: Fallback cleanup với better GitHub element handling
+  // Fallback cleanup với better GitHub element handling
   fallbackCleanup() {
     try {
       // 1. Handle remaining placeholders
@@ -488,7 +413,7 @@ export class MedievalTracker {
     }
   }
 
-  // ✅ NEW: Rescue GitHub elements that might be trapped in medieval wrappers
+  // Rescue GitHub elements that might be trapped in medieval wrappers
   rescueTrappedGitHubElements() {
     const gitHubElements = document.querySelectorAll(
       '.js-pinned-items-reorder-container, [data-testid="pinned-items"], .pinned-item-list-item'
@@ -500,8 +425,6 @@ export class MedievalTracker {
       );
 
       if (medievalWrapper && medievalWrapper !== element) {
-        console.log('[MedievalTracker] Rescuing trapped GitHub element');
-
         // Find the best parent
         const bestParent = this.findBestParentForElement(element);
         if (bestParent) {
@@ -511,7 +434,7 @@ export class MedievalTracker {
     });
   }
 
-  // ✅ NEW: Safely remove wrapper while preserving important children
+  // Safely remove wrapper while preserving important children
   safelyRemoveWrapper(wrapper) {
     try {
       // Look for important GitHub elements inside
@@ -536,7 +459,7 @@ export class MedievalTracker {
     }
   }
 
-  // ✅ NEW: Attempt to restore element from stored data
+  // Attempt to restore element from stored data
   attemptElementRestore(element) {
     try {
       // Try to restore from data attributes

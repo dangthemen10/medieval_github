@@ -1,4 +1,3 @@
-// pinnedRepos.js - Enhanced với proper DOM restoration
 import { setupDragScroll } from './dragScroll.js';
 import { createFlag, createCastleImage } from './flag.js';
 import { CASTLE_POSITIONS } from './constants.js';
@@ -17,8 +16,6 @@ export function redesignPinnedRepos() {
     ?.includes('Pinned');
 
   if (pinnedContainer) {
-    console.log('Found pinned container:', pinnedContainer);
-
     // ✅ FIX 1: Lưu reference đến parent container để đảm bảo không bị mất
     const originalParent = pinnedContainer.parentNode;
     const originalNextSibling = pinnedContainer.nextSibling;
@@ -65,7 +62,6 @@ export function redesignPinnedRepos() {
         box-sizing: border-box;
       `;
 
-    // ✅ FIX 3: Insert frameWrapper vào vị trí của placeholder
     originalParent.insertBefore(frameWrapper, placeholder);
 
     // Di chuyển pinnedContainer vào frameWrapper
@@ -76,7 +72,6 @@ export function redesignPinnedRepos() {
     let headerContainer = null;
 
     if (header) {
-      // ✅ FIX 1: Lưu reference đến parent container để đảm bảo không bị mất
       const originalParentH2 = header.parentNode;
       const originalNextSiblingH2 = header.nextSibling;
 
@@ -89,7 +84,6 @@ export function redesignPinnedRepos() {
       // Insert placeholder vào vị trí ban đầu
       originalParentH2.insertBefore(placeholderH2, header);
       // Track modification của header
-      // ✅ FIX 2: Enhanced tracking với placeholder reference
       trackModified(header, {
         originalParent: originalParentH2,
         originalNextSibling: originalNextSiblingH2,
@@ -327,10 +321,6 @@ export function redesignPinnedRepos() {
 
     // Setup drag scroll
     setupDragScroll(pinnedContainer, scrollableArea);
-
-    console.log(
-      'Pinned repositories redesigned successfully with enhanced tracking!'
-    );
   } else {
     console.log('Pinned container not found yet, retrying...');
   }
