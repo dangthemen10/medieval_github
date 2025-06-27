@@ -3,7 +3,10 @@ import {
   applyMedievalTheme,
   cleanupTextAndIconChanges,
 } from './themeApplier.js';
-import { redesignProfileSection } from './profileSection.js';
+import {
+  redesignProfileSection,
+  restoreProfileSection,
+} from './profileSection.js';
 import { cleanupMedieval, medievalTracker } from './tracking.js';
 import { loadMedievalCSS, removeMedievalCSS } from './loadMedievalCss.js';
 
@@ -46,16 +49,8 @@ function waitForElement(selector, callback, maxAttempts = 50) {
  * Applies medieval theme to the entire page
  */
 function applyMedievalStyles() {
-  console.log('🏰 Applying Medieval GitHub Theme...');
-
   // Load CSS first
   loadMedievalCSS();
-
-  // Debug tracking status
-  console.log(
-    '📊 Tracking status before apply:',
-    medievalTracker.getTrackingStatus()
-  );
 
   // Apply theme components
   applyMedievalTheme();
@@ -70,36 +65,18 @@ function applyMedievalStyles() {
 
   pinnedSelectors.forEach((selector) => {
     waitForElement(selector, () => {
-      console.log(`${selector} found, applying animated flags redesign...`);
       redesignPinnedRepos();
     });
   });
 
   // Mark body as medieval mode active
   document.body.classList.add('medieval-mode');
-
-  // Debug tracking status after apply
-  setTimeout(() => {
-    console.log(
-      '📊 Tracking status after apply:',
-      medievalTracker.getTrackingStatus()
-    );
-  }, 1000);
 }
 
 /**
  * Removes medieval theme using tracking system
  */
 function removeMedievalStyles() {
-  console.log('❌ Removing Medieval GitHub Theme...');
-
-  // Debug tracking status before cleanup
-  console.log(
-    '📊 Tracking status before cleanup:',
-    medievalTracker.getTrackingStatus()
-  );
-
-  // Remove CSS and body classes
   removeMedievalCSS();
   document.body.classList.remove('medieval-mode');
 
@@ -110,15 +87,36 @@ function removeMedievalStyles() {
   // Fallback cleanup for edge cases
   performFallbackCleanup();
 
-  // Debug tracking status after cleanup
   setTimeout(() => {
-    console.log(
-      '📊 Tracking status after cleanup:',
-      medievalTracker.getTrackingStatus()
-    );
-  }, 500);
+    verifyVcardRestoration();
+  }, 100);
+}
 
-  console.log('✅ Medieval theme removed successfully');
+function verifyVcardRestoration() {
+  const vcardContainer = document.querySelector('.vcard-names-container');
+
+  if (vcardContainer) {
+    const computedStyle = window.getComputedStyle(vcardContainer);
+    const isVisible =
+      computedStyle.display !== 'none' && computedStyle.visibility !== 'hidden';
+
+    if (!isVisible && vcardContainer.innerHTML.length > 0) {
+      vcardContainer.style.display = '';
+      vcardContainer.style.visibility = '';
+      vcardContainer.style.opacity = '';
+
+      // Clean up any remaining medieval attributes
+      delete vcardContainer.dataset.medievalHidden;
+      delete vcardContainer.dataset.medievalId;
+      delete vcardContainer.dataset.medievalModified;
+      delete vcardContainer.dataset.wasVisible;
+
+      // Force reflow
+      vcardContainer.offsetHeight;
+    }
+  } else {
+    console.warn('⚠️ vCard container not found during verification');
+  }
 }
 
 /**
@@ -287,7 +285,6 @@ function cleanMedievalDataAttributes() {
  */
 function initializeMedievalTheme() {
   if (isEnabled) {
-    console.log('🎯 Initializing Medieval Theme...');
     applyMedievalStyles();
   }
 }
@@ -313,8 +310,8 @@ function setupObserver() {
           if (node.nodeType === Node.ELEMENT_NODE) {
             const trackedElements = node.querySelectorAll
               ? node.querySelectorAll(
-                '[data-medieval-created], [data-medieval-modified]'
-              )
+                  '[data-medieval-created], [data-medieval-modified]'
+                )
               : [];
 
             if (
@@ -322,7 +319,6 @@ function setupObserver() {
               node.dataset?.medievalCreated ||
               node.dataset?.medievalModified
             ) {
-              console.log('🔄 Tracked element removed, may need reapply');
               shouldReapply = true;
             }
           }
@@ -333,7 +329,6 @@ function setupObserver() {
     // Reapply theme if needed
     if (shouldReapply) {
       setTimeout(() => {
-        console.log('🔄 Reapplying medieval theme due to DOM changes...');
         applyMedievalTheme();
       }, 100);
     }
@@ -350,8 +345,6 @@ function setupObserver() {
  * Enhanced message listener with tracking info
  */
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  console.log('📨 Content script received message:', message);
-
   switch (message.action) {
     case 'applyMedievalMode':
     case 'toggleMedieval':
@@ -370,7 +363,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       break;
 
     case 'forceCleanup':
-      console.log('🧹 Force cleanup requested...');
       cleanupMedieval();
       removeMedievalCSS();
       sendResponse({ success: true });
@@ -386,11 +378,9 @@ function handleToggleMedieval(message) {
   isEnabled = message.enabled;
 
   if (isEnabled && !wasEnabled) {
-    console.log('🏰 Enabling Medieval Mode...');
     applyMedievalStyles();
     setupObserver();
   } else if (!isEnabled && wasEnabled) {
-    console.log('❌ Disabling Medieval Mode...');
     removeMedievalStyles();
     if (observer) {
       observer.disconnect();
@@ -409,8 +399,6 @@ async function loadInitialState() {
         const previousEnabled = isEnabled;
         isEnabled = result.medievalEnabled || false;
 
-        console.log('🔄 Loaded state from storage:', isEnabled);
-
         if (isEnabled) {
           initializeMedievalTheme();
           setupObserver();
@@ -419,7 +407,6 @@ async function loadInitialState() {
         }
       });
     } else {
-      console.log('⚠️ Chrome storage not available, defaulting to disabled');
       isEnabled = false;
     }
   } catch (error) {
@@ -449,12 +436,6 @@ function notifyPageLoaded() {
  * Main initialization function
  */
 function initialize() {
-  console.log('🚀 Medieval GitHub Extension initializing...');
-  console.log(
-    '📊 Initial tracking status:',
-    medievalTracker.getTrackingStatus()
-  );
-
   loadInitialState();
   notifyPageLoaded();
   setupObserver();
@@ -471,8 +452,6 @@ function initialize() {
 // ===== EVENT LISTENERS =====
 // Cleanup when page unloads
 window.addEventListener('beforeunload', () => {
-  console.log('🔄 Page unloading, performing cleanup...');
-
   if (observer) {
     observer.disconnect();
   }

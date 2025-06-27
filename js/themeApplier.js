@@ -7,8 +7,6 @@ import { getResourceUrl } from './utils.js';
  * @param {Node} node - Node gốc để bắt đầu xử lý (mặc định: document.body)
  */
 export function applyMedievalTheme(node = document.body) {
-  console.log('[MedievalTheme] Applying theme with tracking support...');
-
   // Lấy tất cả text nodes và xử lý chúng
   getTextNodes(node).forEach(processTextNode);
 }
@@ -55,7 +53,6 @@ function processTextNode(textNode) {
 
   // Đánh dấu đã xử lý
   parent.dataset.medievalTextProcessed = 'true';
-  console.log(`[MedievalTheme] Text replaced in: ${parent.tagName}`);
 }
 
 /**
@@ -108,8 +105,6 @@ function replaceSvgIcon(parent, term) {
   // Tạo và thay thế icon medieval
   const medievalIcon = createMedievalIcon(term);
   parent.replaceChild(medievalIcon, svgElement);
-
-  console.log(`[MedievalTheme] SVG icon replaced for: ${term}`);
 }
 
 /**
@@ -139,16 +134,8 @@ export function restoreOriginalContent(element) {
   try {
     // Xóa marker đã xử lý
     delete element.dataset.medievalTextProcessed;
-
-    // Log cleanup cho medieval icons (tracking system sẽ xử lý restore)
-    element.querySelectorAll('[data-medieval-icon="true"]').forEach((icon) => {
-      const term = icon.dataset.originalTerm;
-      if (term) console.log(`[MedievalTheme] Cleaning up icon for: ${term}`);
-    });
-
     return true;
   } catch (error) {
-    console.error('[MedievalTheme] Error restoring content:', error);
     return false;
   }
 }
@@ -158,21 +145,11 @@ export function restoreOriginalContent(element) {
  * Đây là fallback phòng trường hợp tracking system bỏ sót
  */
 export function cleanupTextAndIconChanges() {
-  console.log('[MedievalTheme] Cleaning up text and icon changes...');
-
   try {
     // Cleanup các elements đã được xử lý
     document
       .querySelectorAll('[data-medieval-text-processed="true"]')
       .forEach(restoreOriginalContent);
-
-    // Log số lượng medieval icons (tracking system sẽ restore)
-    const iconCount = document.querySelectorAll(
-      '[data-medieval-icon="true"]'
-    ).length;
-    console.log(
-      `[MedievalTheme] Found ${iconCount} medieval icons to clean up`
-    );
 
     // Fallback: reverse text replacements thủ công
     performFallbackTextCleanup();
@@ -212,7 +189,6 @@ function performFallbackTextCleanup() {
     // Cập nhật nếu có thay đổi
     if (originalText !== restoredText) {
       textNode.nodeValue = restoredText;
-      console.log('[MedievalTheme] Reversed text in fallback cleanup');
     }
   });
 }
