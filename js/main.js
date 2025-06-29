@@ -7,6 +7,7 @@ import {
   redesignProfileSection,
   restoreProfileSection,
 } from './profileSection.js';
+import { redesignHeader } from './header.js';
 import { cleanupMedieval, medievalTracker } from './tracking.js';
 import { loadMedievalCSS, removeMedievalCSS } from './loadMedievalCss.js';
 
@@ -55,6 +56,7 @@ function applyMedievalStyles() {
   // Apply theme components
   applyMedievalTheme();
   redesignProfileSection();
+  redesignHeader();
 
   // Wait for pinned repos container and apply redesign
   const pinnedSelectors = [
