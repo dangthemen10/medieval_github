@@ -14,6 +14,8 @@ export function redesignProfileSection() {
     return;
   }
 
+  injectUnifrakturCookFont();
+
   // Apply layout modifications
   applyLayoutStyles(layoutSideBar);
 
@@ -24,6 +26,30 @@ export function redesignProfileSection() {
   redesignOrganizationSection(profileContainer);
 
   styleUserProfileBio(profileContainer);
+}
+
+/**
+ * Inject UnifrakturCook font into the page
+ */
+function injectUnifrakturCookFont() {
+  // Check if font is already injected
+  if (document.querySelector('#unifraktur-cook-font')) {
+    return;
+  }
+
+  const fontStyle = document.createElement('style');
+  fontStyle.id = 'unifraktur-cook-font';
+  fontStyle.textContent = `
+    @font-face {
+      font-family: 'UnifrakturCook';
+      src: url('${getResourceUrl('assets/fonts/UnifrakturCook-Bold.ttf')}');
+      font-weight: 700;
+      font-style: normal;
+    }
+  `;
+
+  document.head.appendChild(fontStyle);
+  trackCreated(fontStyle, 'unifraktur-cook-font');
 }
 
 /**
@@ -167,7 +193,7 @@ function addNameContainer(targetElement, nameInfo) {
       color: #F1C488;
       margin: 0 0 8px 0;
       line-height: 1.3;
-      font-family: "Unlock", serif;
+      font-family: "UnifrakturCook", "Unlock", serif;
       padding-bottom: 10px;
       border-bottom: 2px solid #E7BA77;
     `
@@ -186,7 +212,7 @@ function addNameContainer(targetElement, nameInfo) {
       font-weight: 400;
       color: #ffffff;
       margin: 0;
-      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+      font-family: "UnifrakturCook", 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
     `
     );
     trackCreated(usernameElement, 'redesigned-username');
@@ -361,7 +387,7 @@ function createOrganizationContainers(h2Element) {
       font-weight: bold;
       color: #24292f;
       text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-      font-family: 'Cinzel', 'Times New Roman', serif;
+      font-family: 'UnifrakturCook', 'Cinzel', 'Times New Roman', serif;
     `;
     headerContainer.appendChild(h2Element);
   }
@@ -535,91 +561,12 @@ function styleUserProfileBio(profileContainer) {
       left: 125px;
       overflow: hidden;
       font-size: 14px;
-      color: #713535;
-      font-family: "Unkempt", cursive;
+      color:rgb(0, 0, 0);
+      font-family: "UnifrakturCook", "Unkempt", cursive;
     `;
   }
 
   if (userBadgeContainer && userBadge) {
     userBadgeContainer.style.cssText = 'margin-bottom: 0;';
   }
-}
-
-function restoreVcardContainer() {
-  const vcardContainer = document.querySelector(
-    '.vcard-names-container[data-medieval-hidden="true"]'
-  );
-  if (!vcardContainer) {
-    return false;
-  }
-
-  try {
-    const medievalId = vcardContainer.dataset.medievalId;
-    if (!medievalId) {
-      return false;
-    }
-
-    const restored = medievalTracker.restoreModifiedElement(medievalId);
-
-    if (restored) {
-      return true;
-    }
-
-    // Clear problematic styles
-    vcardContainer.style.display = '';
-    vcardContainer.style.visibility = '';
-    vcardContainer.style.opacity = '';
-
-    // Check if it was originally visible
-    const wasVisible = vcardContainer.dataset.wasVisible === 'true';
-    if (wasVisible) {
-      // Force show if it was originally visible
-      vcardContainer.style.display = 'block';
-      vcardContainer.style.visibility = 'visible';
-    }
-
-    // Clean up medieval markers
-    delete vcardContainer.dataset.medievalHidden;
-    delete vcardContainer.dataset.wasVisible;
-    delete vcardContainer.dataset.medievalId;
-    delete vcardContainer.dataset.medievalModified;
-
-    // Force reflow
-    vcardContainer.offsetHeight;
-
-    // Verify restoration
-    const finalStyle = window.getComputedStyle(vcardContainer);
-    const isVisible =
-      finalStyle.display !== 'none' && finalStyle.visibility !== 'hidden';
-
-    return isVisible;
-  } catch (error) {
-    console.error('[ProfileSection] Error restoring vCard container:', error);
-    return false;
-  }
-}
-
-export function restoreProfileSection() {
-  const vcardRestored = restoreVcardContainer();
-  if (!vcardRestored) {
-    console.warn('[ProfileSection] Failed to restore vCard container');
-  }
-
-  const redesignedNameContainers = document.querySelectorAll(
-    '.redesigned-name-container'
-  );
-  redesignedNameContainers.forEach((container) => {
-    try {
-      if (container.parentNode) {
-        container.parentNode.removeChild(container);
-      }
-    } catch (error) {
-      console.warn(
-        '[ProfileSection] Error removing redesigned name container:',
-        error
-      );
-    }
-  });
-
-  return vcardRestored;
 }

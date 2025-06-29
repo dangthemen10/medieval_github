@@ -3,13 +3,11 @@ import {
   applyMedievalTheme,
   cleanupTextAndIconChanges,
 } from './themeApplier.js';
-import {
-  redesignProfileSection,
-  restoreProfileSection,
-} from './profileSection.js';
 import { redesignHeader } from './header.js';
+import { redesignProfileSection } from './profileSection.js';
 import { cleanupMedieval, medievalTracker } from './tracking.js';
 import { loadMedievalCSS, removeMedievalCSS } from './loadMedievalCss.js';
+import { redesignMedievalYearList } from './yearList.js';
 
 // ===== GLOBAL STATE =====
 let isEnabled = false;
@@ -57,6 +55,7 @@ function applyMedievalStyles() {
   applyMedievalTheme();
   redesignProfileSection();
   redesignHeader();
+  redesignMedievalYearList();
 
   // Wait for pinned repos container and apply redesign
   const pinnedSelectors = [
