@@ -20,12 +20,9 @@
 
 body {
   font-family: 'UnifrakturCook', cursive;
-  background: linear-gradient(
-      rgba(244, 230, 195, 0.6),
-      rgba(244, 230, 195, 0.6)
-    ),
-    url('chrome-extension://__MSG_@@extension_id__/assets/icon/background.png')
-      no-repeat center center fixed !important;
+  background: linear-gradient(rgba(244, 230, 195, 0.6),
+      rgba(244, 230, 195, 0.6)),
+    url('chrome-extension://__MSG_@@extension_id__/assets/icon/background.png') no-repeat center center fixed !important;
   background-size: cover !important;
   color: var(--text-dark) !important;
   transition: background 0.5s ease-in-out;
@@ -51,6 +48,7 @@ button {
   color: #fff;
   transition: transform 0.2s ease-in-out;
 }
+
 button:hover {
   transform: scale(1.05);
 }
@@ -66,6 +64,7 @@ button:hover {
   border-radius: 5px;
   transition: transform 0.2s ease-in-out;
 }
+
 .card:hover,
 .box:hover,
 .borderGrid:hover {
@@ -77,13 +76,16 @@ button:hover {
   0% {
     text-shadow: 0 0 5px #ff4500;
   }
+
   50% {
     text-shadow: 0 0 15px #ff6347;
   }
+
   100% {
     text-shadow: 0 0 5px #ff4500;
   }
 }
+
 .animated-text {
   animation: fireText 1s infinite alternate;
   color: #8b0000;
@@ -93,16 +95,49 @@ button:hover {
 /* Dark Mode Compatibility */
 @media (prefers-color-scheme: dark) {
   body {
-    background: linear-gradient(
-        rgba(237, 176, 130, 0.5),
-        rgba(239, 181, 140, 0.5)
-      ),
-      url('chrome-extension://__MSG_@@extension_id__/assets/icon/background.png')
-        no-repeat center center fixed !important;
+    background: linear-gradient(rgba(237, 176, 130, 0.5),
+        rgba(239, 181, 140, 0.5)),
+      url('chrome-extension://__MSG_@@extension_id__/assets/icon/background.png') no-repeat center center fixed !important;
     background-size: cover !important;
   }
+
   .navbar,
   .header {
     background-color: var(--wood-dark) !important;
   }
+}
+
+.medieval__profileCustom {
+  background-color: #713535;
+  border-left: 3px solid #E0AC63;
+  border-right: 3px solid #E0AC63;
+  position: relative;
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  max-width: 360px;
+  width: 100%;
+  min-height: 350px;
+  padding: 20px 10px;
+}
+
+.medieval__profileCustom::after {
+  content: "";
+  display: block;
+  position: absolute;
+  bottom: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: 0;
+  height: 0;
+
+  border-left: 152px solid transparent;
+  border-right: 152px solid transparent;
+  border-top: 100px solid #713535;
+  box-shadow: inset 0 -28px 0 0 #E0AC63;
+}
+
+.btn-block {
+  margin-top: 120px;
 }

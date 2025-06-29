@@ -58,7 +58,6 @@ export function redesignPinnedRepos() {
         background-repeat: no-repeat;
         background-position: center;
         padding: ${hasPinnedContent ? 0 : '120px 98px 137px 123px'};
-        left: ${hasPinnedContent ? '-100px' : 0};
         box-sizing: border-box;
       `;
 

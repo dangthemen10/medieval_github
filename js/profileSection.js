@@ -23,7 +23,7 @@ export function redesignProfileSection() {
   // Redesign organization section
   redesignOrganizationSection(profileContainer);
 
-  styleUserProfileBio(profileContainer);
+  console.log('GitHub profile section redesigned successfully');
 }
 
 /**
@@ -66,6 +66,7 @@ function redesignProfileHeader(profileContainer) {
     addNameContainer(targetElement, nameInfo);
   }
 
+  addUserProfileBio(targetElement);
   // Style avatar with hover effects
   styleAvatarContainer(targetElement);
 }
@@ -125,20 +126,7 @@ function applyProfileFrameStyles(targetElement) {
     className: targetElement.className,
     innerHTML: targetElement.innerHTML,
   });
-
-  targetElement.style.cssText = `
-    background-image: url('${frameAvatarBackground}');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    position: relative;
-    display: flex !important;
-    flex-direction: column;
-    justify-content: center;
-    width: 360px;
-    padding: 15px 100px 130px 70px;
-    align-items: center;
-  `;
+  targetElement.classList.add('medieval__profileCustom');
 }
 
 /**
@@ -215,9 +203,8 @@ function styleAvatarContainer(targetElement) {
 
   trackModified(avatarContainer, { style: avatarContainer.style.cssText });
   avatarContainer.style.cssText = `
-    z-index: 4;
     transition: transform 0.3s ease;
-    width: 150px;
+    width: 200px;
   `;
 
   const avatarImg = avatarContainer.querySelector('.avatar');
@@ -520,24 +507,52 @@ function styleOrganizationLink(aElement, isSmallGroup) {
   }
 }
 
-function styleUserProfileBio(profileContainer) {
+function addUserProfileBio(targetElement) {
   const bioText = document.querySelector('.user-profile-bio');
   const userBadgeContainer = document.querySelector(
     '.user-status-circle-badge-container'
   );
   const userBadge = document.querySelector('.user-status-circle-badge');
+  targetElement.appendChild(bioText);
 
-  if (profileContainer && bioText) {
-    profileContainer.style.cssText = `position: relative;`;
-    bioText.style.cssText = `  
+  if (targetElement && bioText) {
+    const imageUrl = getResourceUrl('assets/icon/logo__armorial.png');
+    const style = document.createElement('style');
+
+    style.textContent = `
+    .user-profile-bio {
+     overflow: visible;
+    }
+
+    .user-profile-bio::before {
+      content: "";
       position: absolute;
-      top: 255px;
-      left: 125px;
-      overflow: hidden;
-      font-size: 14px;
+      bottom: -90px;
+      left: -80px;
+      width: 500px;
+      height: 230px;
+      background-image: url(${imageUrl});
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      z-index: 2;
+    }
+    .user-profile-bio > div {
+      z-index: 4;
+      position: relative;
+      top: 40px;
       color: #713535;
-      font-family: "Unkempt", cursive;
+      margin-left: 20%;
+      width: 100%;
+      max-width: 20px;
+      max-height: 100px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
     `;
+    document.head.appendChild(style);
   }
 
   if (userBadgeContainer && userBadge) {

@@ -52,8 +52,8 @@ function redesignSearchBar(header) {
   searchIcon.style.fill = '#862626';
   searchButton.style.cssText = `
     background: url('${getResourceUrl(
-      'assets/icon/search.png'
-    )}') no-repeat center center;
+    'assets/icon/search.png'
+  )}') no-repeat center center;
     background-size: cover;
     border: solid 0.0625rem #A35F0C;
   `;
