@@ -11,7 +11,7 @@ export function redesignMedievalYearList() {
     const yearListContainer = document.querySelector('#year-list-container');
 
     if (!yearListContainer) return;
-
+    yearListContainer.classList.remove('pl-5');
     const profileTimelineYearListContainer = yearListContainer
       .querySelectorAll('.js-profile-timeline-year-list')
       .item(1);
@@ -33,12 +33,9 @@ export function redesignMedievalYearList() {
       background-size: contain;
       background-position: center center;
       background-repeat: no-repeat;
-      position: fixed;
       flex-direction: column;
       padding: 100px 140px 40px 90px;
       align-items: center;
-      top: 1px !important;
-      left: 1190.33px !important;
       display: flex !important;
     `;
 
