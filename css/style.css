@@ -90,6 +90,80 @@ button:hover {
   font-weight: bold;
 }
 
+.ContributionCalendar-day[data-level="0"] {
+  background-color: transparent;
+  width: 10px; /* Ensure the width matches your design */
+  height: 10px; /* Ensure the height matches your design */
+  background-image: url('chrome-extension://__MSG_@@extension_id__/assets/icon/shield_default.png');
+  background-size: cover; /* Ensures the image covers the entire element */
+  background-position: center; /* Centers the image */
+  background-repeat: no-repeat; /* Prevents the image from repeating */
+}
+
+.ContributionCalendar-day[data-level="1"] {
+  background-color: transparent;
+  width: 10px; /* Ensure the width matches your design */
+  height: 10px; /* Ensure the height matches your design */
+  background-image: url('chrome-extension://__MSG_@@extension_id__/assets/icon/shield_medium.png');
+  background-size: cover; /* Ensures the image covers the entire element */
+  background-position: center; /* Centers the image */
+  background-repeat: no-repeat; /* Prevents the image from repeating */
+}
+
+.ContributionCalendar-day[data-level="2"] {
+  background-color: transparent;
+  width: 10px; /* Ensure the width matches your design */
+  height: 10px; /* Ensure the height matches your design */
+  background-image: url('chrome-extension://__MSG_@@extension_id__/assets/icon/shield_more.png');
+  background-size: cover; /* Ensures the image covers the entire element */
+  background-position: center; /* Centers the image */
+  background-repeat: no-repeat; /* Prevents the image from repeating */
+}
+
+.ContributionCalendar-day[data-level="3"] {
+  background-color: transparent;
+  width: 10px; /* Ensure the width matches your design */
+  height: 10px; /* Ensure the height matches your design */
+  background-image: url('chrome-extension://__MSG_@@extension_id__/assets/icon/shield_many.png');
+  background-size: cover; /* Ensures the image covers the entire element */
+  background-position: center; /* Centers the image */
+  background-repeat: no-repeat; /* Prevents the image from repeating */
+}
+
+.ContributionCalendar-day[data-level="4"] {
+  background-color: transparent;
+  width: 10px; /* Ensure the width matches your design */
+  height: 10px; /* Ensure the height matches your design */
+  background-image: url('chrome-extension://__MSG_@@extension_id__/assets/icon/shield_so_more.png');
+  background-size: cover; /* Ensures the image covers the entire element */
+  background-position: center; /* Centers the image */
+  background-repeat: no-repeat; /* Prevents the image from repeating */
+}
+
+.js-yearly-contributions {
+  background-image: url('chrome-extension://__MSG_@@extension_id__/assets/icon/paper_scroll.png');
+  background-size: 120% 120%;
+  background-position: center; /* Centers the image */
+  background-repeat: no-repeat; /* Prevents the image from repeating */
+  padding: 50px 90px 70px 80px; /* Adjust these values as needed */
+}
+
+.ContributionCalendar-label {
+  font-size: 14px;
+}
+
+span {
+  color: #AB0000;
+}
+
+a {
+  color: #AB0000;
+}
+
+.graph-before-activity-overview.border {
+  border: none !important;
+}
+
 /* Dark Mode Compatibility */
 @media (prefers-color-scheme: dark) {
   body {
