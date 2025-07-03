@@ -38,6 +38,13 @@ export const MEDIEVAL_TERMS = {
   'Latest changes': 'New Decrees',
   'Explore repositories': 'Explore castles',
   'Popular repositories': 'Famed castles',
+  'Contribution activity': 'Chronicle of Merits',
+  'Show more activity': 'Next Page of the Chronicle',
+  repository: 'castle',
+  repositories: 'castles',
+  'pull requests': 'quests',
+  commits: "oaths",
+  Opened: "Recorded",
 };
 
 // Mảng các tọa độ cố định cho castles
