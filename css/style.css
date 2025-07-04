@@ -160,6 +160,55 @@ a {
   color: #AB0000;
 }
 
+a.Link--primary {
+  color: #a88400 !important;
+}
+
+a.Link--secondary {
+  color: #855d18 !important;
+  font-size: 15px;
+}
+
+div.Layout-main {
+  background-image: url('chrome-extension://__MSG_@@extension_id__/assets/icon/paper_scroll_down.png');
+  background-size: 120% 120%;
+  background-position: center; /* Centers the image */
+  background-repeat: no-repeat; /* Prevents the image from repeating */
+  padding: 200px 130px; /* Adjust these values as needed */
+}
+
+table[aria-labelledby="folders-and-files"] {
+  border: none;
+}
+
+td.rounded-top-2 {
+  background-color: transparent !important;
+}
+
+table {
+  border-collapse: collapse !important; /* Ensures borders are collapsed into a single border */
+}
+
+tr {
+  border: none !important; /* Removes borders from table rows */
+}
+
+td, th {
+  border: none !important; /* Removes borders from table cells */
+}
+
+div[itemscope] {
+  background-color: transparent;
+}
+
+div[class^='OverviewRepoFiles-module__Box'], div[class^='DirectoryRichtextContent'], h1.heading-element, h2.heading-element {
+  border: none !important;
+}
+
+.react-directory-truncate a {
+  font-size: 20px;
+}
+
 .graph-before-activity-overview.border {
   border: none !important;
 }
