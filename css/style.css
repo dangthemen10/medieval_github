@@ -90,6 +90,192 @@ button:hover {
   font-weight: bold;
 }
 
+.ContributionCalendar-day[data-level="0"] {
+  background-color: transparent;
+  width: 10px; /* Ensure the width matches your design */
+  height: 10px; /* Ensure the height matches your design */
+  background-image: url('chrome-extension://__MSG_@@extension_id__/assets/icon/shield_default.png');
+  background-size: cover; /* Ensures the image covers the entire element */
+  background-position: center; /* Centers the image */
+  background-repeat: no-repeat; /* Prevents the image from repeating */
+}
+
+.ContributionCalendar-day[data-level="1"] {
+  background-color: transparent;
+  width: 10px; /* Ensure the width matches your design */
+  height: 10px; /* Ensure the height matches your design */
+  background-image: url('chrome-extension://__MSG_@@extension_id__/assets/icon/shield_medium.png');
+  background-size: cover; /* Ensures the image covers the entire element */
+  background-position: center; /* Centers the image */
+  background-repeat: no-repeat; /* Prevents the image from repeating */
+}
+
+.ContributionCalendar-day[data-level="2"] {
+  background-color: transparent;
+  width: 10px; /* Ensure the width matches your design */
+  height: 10px; /* Ensure the height matches your design */
+  background-image: url('chrome-extension://__MSG_@@extension_id__/assets/icon/shield_more.png');
+  background-size: cover; /* Ensures the image covers the entire element */
+  background-position: center; /* Centers the image */
+  background-repeat: no-repeat; /* Prevents the image from repeating */
+}
+
+.ContributionCalendar-day[data-level="3"] {
+  background-color: transparent;
+  width: 10px; /* Ensure the width matches your design */
+  height: 10px; /* Ensure the height matches your design */
+  background-image: url('chrome-extension://__MSG_@@extension_id__/assets/icon/shield_many.png');
+  background-size: cover; /* Ensures the image covers the entire element */
+  background-position: center; /* Centers the image */
+  background-repeat: no-repeat; /* Prevents the image from repeating */
+}
+
+.ContributionCalendar-day[data-level="4"] {
+  background-color: transparent;
+  width: 10px; /* Ensure the width matches your design */
+  height: 10px; /* Ensure the height matches your design */
+  background-image: url('chrome-extension://__MSG_@@extension_id__/assets/icon/shield_so_more.png');
+  background-size: cover; /* Ensures the image covers the entire element */
+  background-position: center; /* Centers the image */
+  background-repeat: no-repeat; /* Prevents the image from repeating */
+}
+
+.js-yearly-contributions {
+  background-image: url('chrome-extension://__MSG_@@extension_id__/assets/icon/paper_scroll.png');
+  background-size: 120% 120%;
+  background-position: center; /* Centers the image */
+  background-repeat: no-repeat; /* Prevents the image from repeating */
+  padding: 50px 90px 70px 80px; /* Adjust these values as needed */
+}
+
+.ContributionCalendar-label {
+  font-size: 14px;
+}
+
+span {
+  color: #AB0000;
+}
+
+a {
+  color: #AB0000;
+}
+
+a.Link--primary {
+  color: #a88400 !important;
+}
+
+a.Link--secondary {
+  color: #855d18 !important;
+  font-size: 15px;
+}
+
+div.Layout-main {
+  background-image: url('chrome-extension://__MSG_@@extension_id__/assets/icon/paper_scroll_down.png');
+  background-size: 120% 120%;
+  background-position: center; /* Centers the image */
+  background-repeat: no-repeat; /* Prevents the image from repeating */
+  padding: 200px 130px; /* Adjust these values as needed */
+}
+
+table[aria-labelledby="folders-and-files"] {
+  border: none;
+}
+
+td.rounded-top-2 {
+  background-color: transparent !important;
+}
+
+table {
+  border-collapse: collapse !important; /* Ensures borders are collapsed into a single border */
+}
+
+tr {
+  border: none !important; /* Removes borders from table rows */
+}
+
+td, th {
+  border: none !important; /* Removes borders from table cells */
+}
+
+div[itemscope] {
+  background-color: transparent;
+}
+
+div[class^='OverviewRepoFiles-module__Box'], div[class^='DirectoryRichtextContent'], h1.heading-element, h2.heading-element {
+  border: none !important;
+}
+
+.react-directory-truncate a {
+  font-size: 20px;
+}
+
+.graph-before-activity-overview.border {
+  border: none !important;
+}
+
+h3.h6.pr-2, h2.f4.text-normal.mt-4 {
+  display: flex;
+  justify-content: center; /* Centers horizontally */
+  align-items: center; /* Centers vertically */
+  background-image: url('chrome-extension://__MSG_@@extension_id__/assets/icon/frame_title.png');
+  background-position: center; /* Centers the image */
+  background-repeat: no-repeat; /* Prevents the image from repeating */
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  height: 100px !important;
+  font-size: 20px !important;
+  color: #AB0000;
+}
+
+span.color-bg-default.pl-2.pr-3 {
+  background-color: transparent !important;
+}
+
+.contribution-activity-listing .color-fg-muted {
+  color: #AB0000 !important;
+}
+
+.contribution-activity-listing {
+  width: 100%
+}
+
+form.js-show-more-timeline-form {
+  display: flex;
+  flex-direction: column; /* Stack children vertically */
+  align-items: center; /* Center horizontally */
+  width: 100%; /* Ensure it takes full width */
+}
+
+button.contribution-activity-show-more {
+  width: 50% !important;
+  border: 2px solid #AB0000 !important;
+  border-radius: 15px !important;
+  font-size: 18px !important;
+  color: #AB0000 !important;
+  background: #ffdf87 !important;
+}
+
+#js-contribution-activity {
+  background-image: url('chrome-extension://__MSG_@@extension_id__/assets/icon/activity_left.png'); /* Path to your image */
+  background-repeat: repeat-y; /* Repeats the image vertically */
+  background-position: 0px 15px; /* Positions the image on the left */
+  background-size: 70px 600px; /* Adjusts size to fit the container's height */
+  padding-left: 40px; /* Adds space for the repeating image */
+}
+
+.TimelineItem-badge {
+  visibility: hidden;
+}
+
+.TimelineItem:before {
+  width: 0;
+}
+
+.TimelineItem .color-fg-default.ws-normal.text-left {
+  color: #ffe59c !important;
+}
+
 /* Dark Mode Compatibility */
 @media (prefers-color-scheme: dark) {
   body {
